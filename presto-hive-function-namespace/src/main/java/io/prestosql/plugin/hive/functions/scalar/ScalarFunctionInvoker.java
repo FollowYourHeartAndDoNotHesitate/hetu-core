@@ -11,17 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.prestosql.spi.function;
+package io.prestosql.plugin.hive.functions.scalar;
 
-import io.prestosql.spi.type.TypeManager;
+import io.prestosql.spi.function.Signature;
 
-import java.util.Map;
-
-public interface FunctionNamespaceManagerFactory
+public interface ScalarFunctionInvoker
 {
-    String getName();
+    Signature getSignature();
 
-    FunctionHandleResolver getHandleResolver();
-
-    FunctionNamespaceManager<?> create(String catalogName, Map<String, String> config, FunctionNamespaceManagerContext functionNamespaceManagerContext, TypeManager typeManager);
+    Object evaluate(Object... inputs);
 }

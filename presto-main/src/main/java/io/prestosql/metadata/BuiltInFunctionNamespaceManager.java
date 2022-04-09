@@ -168,6 +168,7 @@ import io.prestosql.spi.function.OperatorType;
 import io.prestosql.spi.function.ScalarFunctionImplementation;
 import io.prestosql.spi.function.Signature;
 import io.prestosql.spi.function.SqlFunction;
+import io.prestosql.spi.function.SqlFunctionResult;
 import io.prestosql.spi.function.SqlInvokedFunction;
 import io.prestosql.spi.function.SqlInvokedScalarFunctionImplementation;
 import io.prestosql.spi.type.Type;
@@ -770,7 +771,7 @@ public class BuiltInFunctionNamespaceManager
     }
 
     @Override
-    public final CompletableFuture<Block> executeFunction(FunctionHandle functionHandle, Page input, List<Integer> channels, TypeManager typeManager)
+    public final CompletableFuture<SqlFunctionResult> executeFunction(FunctionHandle functionHandle, Page input, List<Integer> channels, TypeManager typeManager)
     {
         throw new IllegalStateException("Builtin function execution should be handled by the engine.");
     }

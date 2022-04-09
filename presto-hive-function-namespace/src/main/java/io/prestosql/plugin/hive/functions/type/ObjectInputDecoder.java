@@ -11,17 +11,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.prestosql.spi.function;
 
-import io.prestosql.spi.type.TypeManager;
+package io.prestosql.plugin.hive.functions.type;
 
-import java.util.Map;
-
-public interface FunctionNamespaceManagerFactory
+public interface ObjectInputDecoder
 {
-    String getName();
-
-    FunctionHandleResolver getHandleResolver();
-
-    FunctionNamespaceManager<?> create(String catalogName, Map<String, String> config, FunctionNamespaceManagerContext functionNamespaceManagerContext, TypeManager typeManager);
+    /**
+     * Decodes Presto function internal object
+     * (ie. boolean/long/double/slice/block)
+     * to Hive function internal object.
+     */
+    Object decode(Object object);
 }

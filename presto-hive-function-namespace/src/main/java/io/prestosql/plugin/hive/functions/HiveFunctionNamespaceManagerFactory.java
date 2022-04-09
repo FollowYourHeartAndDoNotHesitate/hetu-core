@@ -11,27 +11,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.hetu.core.plugin.functionnamespace.memory;
+
+package io.prestosql.plugin.hive.functions;
 
 import com.google.inject.Injector;
 import io.airlift.bootstrap.Bootstrap;
+import io.prestosql.spi.classloader.ThreadContextClassLoader;
 import io.prestosql.spi.function.FunctionHandleResolver;
 import io.prestosql.spi.function.FunctionNamespaceManager;
 import io.prestosql.spi.function.FunctionNamespaceManagerContext;
 import io.prestosql.spi.function.FunctionNamespaceManagerFactory;
-import io.prestosql.spi.function.SqlFunctionHandle;
 import io.prestosql.spi.type.TypeManager;
 
 import java.util.Map;
 
-import static com.google.common.base.Throwables.throwIfUnchecked;
+import static java.util.Objects.requireNonNull;
 
-public class InMemoryFunctionNamespaceManagerFactory
+public class HiveFunctionNamespaceManagerFactory
         implements FunctionNamespaceManagerFactory
 {
-    public static final String NAME = "memory";
+    private final ClassLoader classLoader;
+    private final FunctionHandleResolver functionHandleResolver;
 
-    private static final SqlFunctionHandle.Resolver HANDLE_RESOLVER = new SqlFunctionHandle.Resolver();
+    public static final String NAME = "hive-functions";
+
+    public HiveFunctionNamespaceManagerFactory(ClassLoader classLoader)
+    {
+        this.classLoader = requireNonNull(classLoader, "classLoader is null");
+        this.functionHandleResolver = new HiveFunctionHandleResolver();
+    }
 
     @Override
     public String getName()
@@ -42,27 +50,24 @@ public class InMemoryFunctionNamespaceManagerFactory
     @Override
     public FunctionHandleResolver getHandleResolver()
     {
-        return HANDLE_RESOLVER;
+        return functionHandleResolver;
     }
 
     @Override
     public FunctionNamespaceManager<?> create(String catalogName, Map<String, String> config, FunctionNamespaceManagerContext functionNamespaceManagerContext, TypeManager typeManager)
     {
-        try {
-            Bootstrap app = new Bootstrap(new InMemoryFunctionNamespaceManagerModule(catalogName));
+        requireNonNull(config, "config is null");
+
+        try (ThreadContextClassLoader ignored = new ThreadContextClassLoader(classLoader)) {
+            Bootstrap app = new Bootstrap(
+                    new HiveFunctionModule(catalogName, classLoader, typeManager));
 
             Injector injector = app
                     .doNotInitializeLogging()
                     .setRequiredConfigurationProperties(config)
+                    .quiet()
                     .initialize();
-
-            InMemoryFunctionNamespaceManager inMemoryFunctionNamespaceManager = injector.getInstance(InMemoryFunctionNamespaceManager.class);
-            inMemoryFunctionNamespaceManager.setFunctionNamespaceManagerContext(functionNamespaceManagerContext);
-            return inMemoryFunctionNamespaceManager;
-        }
-        catch (Exception e) {
-            throwIfUnchecked(e);
-            throw new RuntimeException(e.getMessage());
+            return injector.getInstance(FunctionNamespaceManager.class);
         }
     }
 }

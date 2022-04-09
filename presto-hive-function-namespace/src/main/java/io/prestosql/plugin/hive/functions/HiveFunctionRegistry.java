@@ -11,17 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.prestosql.spi.function;
+package io.prestosql.plugin.hive.functions;
 
-import io.prestosql.spi.type.TypeManager;
+import io.prestosql.spi.connector.QualifiedObjectName;
 
-import java.util.Map;
-
-public interface FunctionNamespaceManagerFactory
+public interface HiveFunctionRegistry
 {
-    String getName();
-
-    FunctionHandleResolver getHandleResolver();
-
-    FunctionNamespaceManager<?> create(String catalogName, Map<String, String> config, FunctionNamespaceManagerContext functionNamespaceManagerContext, TypeManager typeManager);
+    Class<?> getClass(QualifiedObjectName name)
+            throws ClassNotFoundException;
 }

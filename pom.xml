@@ -129,6 +129,7 @@
         <module>presto-memory-context</module>
         <module>presto-proxy</module>
         <module>presto-elasticsearch</module>
+        <module>presto-hive-function-namespace</module>
         <module>hetu-hive-functions</module>
         <module>hetu-oracle</module>
         <module>hetu-vdm</module>
@@ -149,7 +150,7 @@
         <module>hetu-sql-migration-tool</module>
         <module>hetu-transport</module>
         <module>hetu-server</module>
-        <module>hetu-server-rpm</module>
+<!--        <module>hetu-server-rpm</module>-->
         <module>hetu-common</module>
         <module>hetu-hazelcast</module>
         <module>hetu-function-namespace-managers</module>
@@ -452,6 +453,12 @@
             <dependency>
                 <groupId>io.hetu.core</groupId>
                 <artifactId>presto-elasticsearch</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.hetu.core</groupId>
+                <artifactId>presto-hive-function-namespace</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

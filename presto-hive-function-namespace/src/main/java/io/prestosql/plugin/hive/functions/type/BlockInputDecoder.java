@@ -11,17 +11,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.prestosql.spi.function;
 
-import io.prestosql.spi.type.TypeManager;
+package io.prestosql.plugin.hive.functions.type;
 
-import java.util.Map;
+import io.prestosql.spi.block.Block;
 
-public interface FunctionNamespaceManagerFactory
+public interface BlockInputDecoder
 {
-    String getName();
-
-    FunctionHandleResolver getHandleResolver();
-
-    FunctionNamespaceManager<?> create(String catalogName, Map<String, String> config, FunctionNamespaceManagerContext functionNamespaceManagerContext, TypeManager typeManager);
+    /**
+     * Get object from block at position and convert it to
+     * internal object used in Hive functions.
+     */
+    Object decode(Block block, int position);
 }

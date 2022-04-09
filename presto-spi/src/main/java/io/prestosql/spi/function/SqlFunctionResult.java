@@ -13,15 +13,28 @@
  */
 package io.prestosql.spi.function;
 
-import io.prestosql.spi.type.TypeManager;
+import io.prestosql.spi.block.Block;
 
-import java.util.Map;
+import static java.util.Objects.requireNonNull;
 
-public interface FunctionNamespaceManagerFactory
+public class SqlFunctionResult
 {
-    String getName();
+    private final Block result;
+    private final long cpuTimeMs;
 
-    FunctionHandleResolver getHandleResolver();
+    public SqlFunctionResult(Block result, long cpuTimeMs)
+    {
+        this.result = requireNonNull(result, "result is null");
+        this.cpuTimeMs = cpuTimeMs;
+    }
 
-    FunctionNamespaceManager<?> create(String catalogName, Map<String, String> config, FunctionNamespaceManagerContext functionNamespaceManagerContext, TypeManager typeManager);
+    public Block getResult()
+    {
+        return result;
+    }
+
+    public long getCpuTimeMs()
+    {
+        return cpuTimeMs;
+    }
 }

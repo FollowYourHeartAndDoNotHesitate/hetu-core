@@ -11,17 +11,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.prestosql.spi.function;
 
-import io.prestosql.spi.type.TypeManager;
+package io.prestosql.plugin.hive.functions;
 
-import java.util.Map;
+import io.prestosql.spi.function.FunctionHandle;
+import io.prestosql.spi.function.FunctionHandleResolver;
 
-public interface FunctionNamespaceManagerFactory
+public class HiveFunctionHandleResolver
+        implements FunctionHandleResolver
 {
-    String getName();
-
-    FunctionHandleResolver getHandleResolver();
-
-    FunctionNamespaceManager<?> create(String catalogName, Map<String, String> config, FunctionNamespaceManagerContext functionNamespaceManagerContext, TypeManager typeManager);
+    @Override
+    public Class<? extends FunctionHandle> getFunctionHandleClass()
+    {
+        return HiveFunctionHandle.class;
+    }
 }
