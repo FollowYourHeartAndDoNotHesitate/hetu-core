@@ -213,7 +213,7 @@ public class FunctionAndTypeManager
             Map<String, String> properties)
     {
         requireNonNull(hetuMetaStoreManager, "hetuMetaStoreManager is nll");
-        FunctionNamespaceManagerContextInstance functionNamespaceManagerContextInstance = new FunctionNamespaceManagerContextInstance(hetuMetaStoreManager.getHetuMetastore());
+        FunctionNamespaceManagerContextInstance functionNamespaceManagerContextInstance = new FunctionNamespaceManagerContextInstance(hetuMetaStoreManager.getHetuMetastore(), this);
         requireNonNull(functionNamespaceManagerName, "functionNamespaceManagerName is null");
         FunctionNamespaceManagerFactory factory = functionNamespaceManagerFactories.get(functionNamespaceManagerName);
         checkState(factory != null, "No factory for function namespace manager %s", functionNamespaceManagerName);
@@ -237,6 +237,11 @@ public class FunctionAndTypeManager
     public FunctionInvokerProvider getFunctionInvokerProvider()
     {
         return functionInvokerProvider;
+    }
+
+    public Map<String, FunctionNamespaceManager<? extends SqlFunction>> getFunctionNamespaceManagers()
+    {
+        return functionNamespaceManagers;
     }
 
     public void addFunctionNamespaceFactory(FunctionNamespaceManagerFactory factory)
@@ -308,7 +313,7 @@ public class FunctionAndTypeManager
         if (transactionId.isPresent()) {
             Optional<FunctionNamespaceTransactionHandle> transactionHandle = transactionId.map(
                     id -> transactionManager.getFunctionNamespaceTransaction(id, functionName.getCatalogName()));
-            return functionNamespaceManager.get().getFunctions(transactionHandle, functionName);
+            return functionNamespaceManager.get().getFunctions(transactionHandle, functionName, null);
         }
         else {
             return functionNamespaceManager.get().listFunctions().stream().filter(sqlFunction -> sqlFunction.getSignature().getName().equals(functionName)).collect(toImmutableList());
@@ -510,7 +515,7 @@ public class FunctionAndTypeManager
         if (parameterTypes.stream().noneMatch(TypeSignatureProvider::hasDependency)) {
             return lookupCachedFunction(functionName, parameterTypes);
         }
-        Collection<? extends SqlFunction> candidates = builtInFunctionNamespaceManager.getFunctions(Optional.empty(), functionName);
+        Collection<? extends SqlFunction> candidates = builtInFunctionNamespaceManager.getFunctions(Optional.empty(), functionName, null);
         return functionResolver.lookupFunction(builtInFunctionNamespaceManager, Optional.empty(), functionName, parameterTypes, candidates);
     }
 
@@ -539,7 +544,8 @@ public class FunctionAndTypeManager
 
         Optional<FunctionNamespaceTransactionHandle> transactionHandle = transactionId
                 .map(id -> transactionManager.getFunctionNamespaceTransaction(id, functionName.getCatalogSchemaName().getCatalogName()));
-        Collection<? extends SqlFunction> candidates = functionNamespaceManager.getFunctions(transactionHandle, functionName);
+
+        Collection<? extends SqlFunction> candidates = functionNamespaceManager.getFunctions(transactionHandle, functionName, parameterTypes.stream().map(TypeSignatureProvider::getTypeSignature).collect(toImmutableList()));
 
         return functionResolver.resolveFunction(functionNamespaceManager, transactionHandle, functionName, parameterTypes, candidates);
     }
