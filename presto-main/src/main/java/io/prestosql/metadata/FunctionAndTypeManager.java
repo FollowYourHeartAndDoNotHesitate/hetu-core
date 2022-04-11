@@ -213,11 +213,11 @@ public class FunctionAndTypeManager
             Map<String, String> properties)
     {
         requireNonNull(hetuMetaStoreManager, "hetuMetaStoreManager is nll");
-        FunctionNamespaceManagerContextInstance functionNamespaceManagerContextInstance = new FunctionNamespaceManagerContextInstance(hetuMetaStoreManager.getHetuMetastore());
+        FunctionNamespaceManagerContextInstance functionNamespaceManagerContextInstance = new FunctionNamespaceManagerContextInstance(hetuMetaStoreManager.getHetuMetastore(), this);
         requireNonNull(functionNamespaceManagerName, "functionNamespaceManagerName is null");
         FunctionNamespaceManagerFactory factory = functionNamespaceManagerFactories.get(functionNamespaceManagerName);
         checkState(factory != null, "No factory for function namespace manager %s", functionNamespaceManagerName);
-        FunctionNamespaceManager<?> functionNamespaceManager = factory.create(catalogName, properties, functionNamespaceManagerContextInstance, this);
+        FunctionNamespaceManager<?> functionNamespaceManager = factory.create(catalogName, properties, functionNamespaceManagerContextInstance);
 
         transactionManager.registerFunctionNamespaceManager(catalogName, functionNamespaceManager);
         if (functionNamespaceManagers.putIfAbsent(catalogName, functionNamespaceManager) != null) {
@@ -539,10 +539,6 @@ public class FunctionAndTypeManager
 
         Optional<FunctionNamespaceTransactionHandle> transactionHandle = transactionId
                 .map(id -> transactionManager.getFunctionNamespaceTransaction(id, functionName.getCatalogSchemaName().getCatalogName()));
-
-        if (functionNamespaceManager.canResolveFunction()) {
-            return functionNamespaceManager.resolveFunction(transactionHandle, functionName, parameterTypes.stream().map(TypeSignatureProvider::getTypeSignature).collect(toImmutableList()));
-        }
 
         Collection<? extends SqlFunction> candidates = functionNamespaceManager.getFunctions(transactionHandle, functionName);
 

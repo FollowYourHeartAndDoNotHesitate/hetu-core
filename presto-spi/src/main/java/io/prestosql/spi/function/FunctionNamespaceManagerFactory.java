@@ -13,8 +13,6 @@
  */
 package io.prestosql.spi.function;
 
-import io.prestosql.spi.type.TypeManager;
-
 import java.util.Map;
 
 public interface FunctionNamespaceManagerFactory
@@ -23,5 +21,5 @@ public interface FunctionNamespaceManagerFactory
 
     FunctionHandleResolver getHandleResolver();
 
-    FunctionNamespaceManager<?> create(String catalogName, Map<String, String> config, FunctionNamespaceManagerContext functionNamespaceManagerContext, TypeManager typeManager);
+    FunctionNamespaceManager<?> create(String catalogName, Map<String, String> config, FunctionNamespaceManagerContext functionNamespaceManagerContext);
 }

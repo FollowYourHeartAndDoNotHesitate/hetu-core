@@ -20,6 +20,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import io.prestosql.spi.Page;
+import io.prestosql.spi.block.Block;
 import io.prestosql.spi.classloader.ThreadContextClassLoader;
 import io.prestosql.spi.connector.QualifiedObjectName;
 import io.prestosql.spi.function.FunctionHandle;
@@ -28,7 +29,6 @@ import io.prestosql.spi.function.FunctionNamespaceManager;
 import io.prestosql.spi.function.FunctionNamespaceTransactionHandle;
 import io.prestosql.spi.function.ScalarFunctionImplementation;
 import io.prestosql.spi.function.Signature;
-import io.prestosql.spi.function.SqlFunctionResult;
 import io.prestosql.spi.function.SqlInvokedFunction;
 import io.prestosql.spi.type.TypeManager;
 import io.prestosql.spi.type.TypeSignature;
@@ -139,15 +139,9 @@ public class HiveFunctionNamespaceManager
     }
 
     @Override
-    public CompletableFuture<SqlFunctionResult> executeFunction(FunctionHandle functionHandle, Page input, List<Integer> channels, TypeManager typeManager)
+    public CompletableFuture<Block> executeFunction(FunctionHandle functionHandle, Page input, List<Integer> channels, TypeManager typeManager)
     {
         throw new IllegalStateException("Execute function is not supported");
-    }
-
-    @Override
-    public boolean canResolveFunction()
-    {
-        return true;
     }
 
     private HiveFunction initializeFunction(FunctionKey key)

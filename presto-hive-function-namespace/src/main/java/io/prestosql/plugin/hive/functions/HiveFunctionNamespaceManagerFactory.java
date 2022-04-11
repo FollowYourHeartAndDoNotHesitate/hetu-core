@@ -21,7 +21,6 @@ import io.prestosql.spi.function.FunctionHandleResolver;
 import io.prestosql.spi.function.FunctionNamespaceManager;
 import io.prestosql.spi.function.FunctionNamespaceManagerContext;
 import io.prestosql.spi.function.FunctionNamespaceManagerFactory;
-import io.prestosql.spi.type.TypeManager;
 
 import java.util.Map;
 
@@ -54,13 +53,13 @@ public class HiveFunctionNamespaceManagerFactory
     }
 
     @Override
-    public FunctionNamespaceManager<?> create(String catalogName, Map<String, String> config, FunctionNamespaceManagerContext functionNamespaceManagerContext, TypeManager typeManager)
+    public FunctionNamespaceManager<?> create(String catalogName, Map<String, String> config, FunctionNamespaceManagerContext functionNamespaceManagerContext)
     {
         requireNonNull(config, "config is null");
 
         try (ThreadContextClassLoader ignored = new ThreadContextClassLoader(classLoader)) {
             Bootstrap app = new Bootstrap(
-                    new HiveFunctionModule("presto", classLoader, typeManager));
+                    new HiveFunctionModule(catalogName, classLoader, functionNamespaceManagerContext.getTypeManager().get()));
 
             Injector injector = app
                     .doNotInitializeLogging()

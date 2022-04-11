@@ -20,7 +20,6 @@ import io.prestosql.spi.function.FunctionNamespaceManager;
 import io.prestosql.spi.function.FunctionNamespaceManagerContext;
 import io.prestosql.spi.function.FunctionNamespaceManagerFactory;
 import io.prestosql.spi.function.SqlFunctionHandle;
-import io.prestosql.spi.type.TypeManager;
 
 import java.util.Map;
 
@@ -46,7 +45,7 @@ public class InMemoryFunctionNamespaceManagerFactory
     }
 
     @Override
-    public FunctionNamespaceManager<?> create(String catalogName, Map<String, String> config, FunctionNamespaceManagerContext functionNamespaceManagerContext, TypeManager typeManager)
+    public FunctionNamespaceManager<?> create(String catalogName, Map<String, String> config, FunctionNamespaceManagerContext functionNamespaceManagerContext)
     {
         try {
             Bootstrap app = new Bootstrap(new InMemoryFunctionNamespaceManagerModule(catalogName));
