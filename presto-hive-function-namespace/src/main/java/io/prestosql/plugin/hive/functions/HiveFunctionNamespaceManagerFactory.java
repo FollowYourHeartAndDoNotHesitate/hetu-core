@@ -60,7 +60,7 @@ public class HiveFunctionNamespaceManagerFactory
 
         try (ThreadContextClassLoader ignored = new ThreadContextClassLoader(classLoader)) {
             Bootstrap app = new Bootstrap(
-                    new HiveFunctionModule(catalogName, classLoader, typeManager));
+                    new HiveFunctionModule("presto", classLoader, typeManager));
 
             Injector injector = app
                     .doNotInitializeLogging()
