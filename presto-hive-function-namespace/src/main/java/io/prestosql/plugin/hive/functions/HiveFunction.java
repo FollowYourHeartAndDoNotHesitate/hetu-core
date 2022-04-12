@@ -60,7 +60,7 @@ public abstract class HiveFunction
     @Override
     public boolean isHidden()
     {
-        return false;
+        return hidden;
     }
 
     @Override

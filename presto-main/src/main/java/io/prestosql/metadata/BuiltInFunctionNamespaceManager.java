@@ -721,7 +721,7 @@ public class BuiltInFunctionNamespaceManager
     }
 
     @Override
-    public List<SqlFunction> getFunctions(Optional<? extends FunctionNamespaceTransactionHandle> transactionHandle, QualifiedObjectName functionName)
+    public List<SqlFunction> getFunctions(Optional<? extends FunctionNamespaceTransactionHandle> transactionHandle, QualifiedObjectName functionName, List<TypeSignature> parameterTypes)
     {
         return new ArrayList<>(functions.get(functionName));
     }
@@ -841,7 +841,7 @@ public class BuiltInFunctionNamespaceManager
 
     private SpecializedFunctionKey doGetSpecializedFunctionKey(Signature signature)
     {
-        Iterable<SqlFunction> candidates = getFunctions(null, signature.getName());
+        Iterable<SqlFunction> candidates = getFunctions(null, signature.getName(), null);
         // search for exact match
         Type returnType = functionAndTypeManager.getType(signature.getReturnType());
         List<TypeSignatureProvider> argumentTypeSignatureProviders = fromTypeSignatures(signature.getArgumentTypes());

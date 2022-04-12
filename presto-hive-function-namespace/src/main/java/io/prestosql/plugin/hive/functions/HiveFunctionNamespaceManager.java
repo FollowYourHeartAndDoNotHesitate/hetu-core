@@ -37,6 +37,7 @@ import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 
 import javax.inject.Inject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -108,19 +109,16 @@ public class HiveFunctionNamespaceManager
         return getCurrentFunctionNames().stream().map(functionName -> createDummyHiveScalarFunction(functionName)).collect(toImmutableList());
     }
 
-    public List<HiveFunction> getFunctions(Optional<? extends FunctionNamespaceTransactionHandle> transactionHandle, QualifiedObjectName functionName)
+    public List<HiveFunction> getFunctions(Optional<? extends FunctionNamespaceTransactionHandle> transactionHandle, QualifiedObjectName functionName, List<TypeSignature> parameterTypes)
     {
-        throw new IllegalStateException("Get function is not supported");
+        List<HiveFunction> hiveFunctions = new ArrayList<>();
+        hiveFunctions.add(initializeFunction(FunctionKey.of(functionName, parameterTypes)));
+        return hiveFunctions;
     }
 
     public FunctionHandle getFunctionHandle(Optional<? extends FunctionNamespaceTransactionHandle> transactionHandle, Signature signature)
     {
-        throw new IllegalStateException("Get function handle is not supported");
-    }
-
-    public FunctionHandle resolveFunction(Optional<? extends FunctionNamespaceTransactionHandle> transactionHandle, QualifiedObjectName functionName, List<TypeSignature> parameterTypes)
-    {
-        return new HiveFunctionHandle(initializeFunction(FunctionKey.of(functionName, parameterTypes)).getSignature());
+        return new HiveFunctionHandle(signature);
     }
 
     public FunctionMetadata getFunctionMetadata(FunctionHandle functionHandle)
