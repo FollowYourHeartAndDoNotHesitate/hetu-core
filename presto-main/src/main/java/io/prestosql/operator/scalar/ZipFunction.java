@@ -22,8 +22,8 @@ import io.prestosql.spi.block.Block;
 import io.prestosql.spi.block.BlockBuilder;
 import io.prestosql.spi.connector.QualifiedObjectName;
 import io.prestosql.spi.function.BuiltInScalarFunctionImplementation;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty;
 import io.prestosql.spi.function.FunctionKind;
+import io.prestosql.spi.function.ScalarImplementationChoice;
 import io.prestosql.spi.function.Signature;
 import io.prestosql.spi.type.RowType;
 import io.prestosql.spi.type.Type;
@@ -35,8 +35,8 @@ import java.util.stream.IntStream;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.prestosql.spi.connector.CatalogSchemaName.DEFAULT_NAMESPACE;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty.valueTypeArgumentProperty;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.RETURN_NULL_ON_NULL;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentProperty.valueTypeArgumentProperty;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.RETURN_NULL_ON_NULL;
 import static io.prestosql.spi.type.TypeSignature.parseTypeSignature;
 import static io.prestosql.spi.util.Reflection.methodHandle;
 import static java.lang.String.join;
@@ -101,7 +101,7 @@ public final class ZipFunction
     public BuiltInScalarFunctionImplementation specialize(BoundVariables boundVariables, int arity, FunctionAndTypeManager functionAndTypeManager)
     {
         List<Type> types = this.typeParameters.stream().map(boundVariables::getTypeVariable).collect(toImmutableList());
-        List<ArgumentProperty> argumentProperties = nCopies(types.size(), valueTypeArgumentProperty(RETURN_NULL_ON_NULL));
+        List<ScalarImplementationChoice.ArgumentProperty> argumentProperties = nCopies(types.size(), valueTypeArgumentProperty(RETURN_NULL_ON_NULL));
         List<Class<?>> javaArgumentTypes = nCopies(types.size(), Block.class);
         MethodHandle methodHandle = METHOD_HANDLE.bindTo(types).asVarargsCollector(Block[].class).asType(methodType(Block.class, javaArgumentTypes));
         return new BuiltInScalarFunctionImplementation(false, argumentProperties, methodHandle);

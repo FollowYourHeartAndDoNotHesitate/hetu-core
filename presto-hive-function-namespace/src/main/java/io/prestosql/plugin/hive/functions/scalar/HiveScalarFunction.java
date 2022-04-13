@@ -103,11 +103,13 @@ public class HiveScalarFunction
             this.invocationConvention = requireNonNull(invocationConvention, "invocationConvention is null");
         }
 
+        @Override
         public InvocationConvention getInvocationConvention()
         {
             return invocationConvention;
         }
 
+        @Override
         public MethodHandle getMethodHandle()
         {
             return methodHandle;

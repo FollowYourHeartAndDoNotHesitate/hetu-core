@@ -36,9 +36,9 @@ import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static io.prestosql.spi.connector.CatalogSchemaName.DEFAULT_NAMESPACE;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty.valueTypeArgumentProperty;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.RETURN_NULL_ON_NULL;
 import static io.prestosql.spi.function.FunctionKind.SCALAR;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentProperty.valueTypeArgumentProperty;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.RETURN_NULL_ON_NULL;
 import static io.prestosql.spi.type.BigintType.BIGINT;
 import static io.prestosql.spi.type.BooleanType.BOOLEAN;
 import static io.prestosql.spi.type.DoubleType.DOUBLE;

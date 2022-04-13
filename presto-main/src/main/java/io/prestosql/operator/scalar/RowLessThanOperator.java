@@ -24,9 +24,9 @@ import io.prestosql.spi.type.Type;
 import java.lang.invoke.MethodHandle;
 import java.util.List;
 
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty.valueTypeArgumentProperty;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.RETURN_NULL_ON_NULL;
 import static io.prestosql.spi.function.OperatorType.LESS_THAN;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentProperty.valueTypeArgumentProperty;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.RETURN_NULL_ON_NULL;
 import static io.prestosql.spi.util.Reflection.methodHandle;
 
 public final class RowLessThanOperator

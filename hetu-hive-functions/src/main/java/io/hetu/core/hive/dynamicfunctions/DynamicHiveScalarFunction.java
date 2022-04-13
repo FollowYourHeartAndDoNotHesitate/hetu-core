@@ -22,6 +22,7 @@ import io.prestosql.spi.connector.QualifiedObjectName;
 import io.prestosql.spi.function.BuiltInScalarFunctionImplementation;
 import io.prestosql.spi.function.DynamicSqlScalarFunction;
 import io.prestosql.spi.function.FunctionKind;
+import io.prestosql.spi.function.ScalarImplementationChoice;
 import io.prestosql.spi.function.Signature;
 import io.prestosql.spi.type.Type;
 import io.prestosql.spi.util.Reflection;
@@ -47,9 +48,9 @@ import static io.prestosql.spi.StandardErrorCode.GENERIC_INTERNAL_ERROR;
 import static io.prestosql.spi.StandardErrorCode.NOT_FOUND;
 import static io.prestosql.spi.StandardErrorCode.NOT_SUPPORTED;
 import static io.prestosql.spi.connector.CatalogSchemaName.DEFAULT_NAMESPACE;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty.valueTypeArgumentProperty;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.RETURN_NULL_ON_NULL;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.USE_BOXED_TYPE;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentProperty.valueTypeArgumentProperty;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.RETURN_NULL_ON_NULL;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.USE_BOXED_TYPE;
 import static java.lang.String.format;
 
 public class DynamicHiveScalarFunction
@@ -140,9 +141,9 @@ public class DynamicHiveScalarFunction
         return new BuiltInScalarFunctionImplementation(true, getNullableArgumentProperties(), getMethodHandle());
     }
 
-    private List<BuiltInScalarFunctionImplementation.ArgumentProperty> getNullableArgumentProperties()
+    private List<ScalarImplementationChoice.ArgumentProperty> getNullableArgumentProperties()
     {
-        List<BuiltInScalarFunctionImplementation.ArgumentProperty> nullableArgProps = new ArrayList<>(evalParamHetuTypes.length);
+        List<ScalarImplementationChoice.ArgumentProperty> nullableArgProps = new ArrayList<>(evalParamHetuTypes.length);
         for (Type type : evalParamHetuTypes) {
             nullableArgProps.add(type.getJavaType().isPrimitive()
                     ? valueTypeArgumentProperty(USE_BOXED_TYPE)

@@ -15,23 +15,23 @@ package io.prestosql.metadata;
 
 import com.google.common.collect.ImmutableList;
 import io.prestosql.operator.scalar.AbstractTestFunctions;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty;
 import io.prestosql.spi.function.InvocationConvention;
 import io.prestosql.spi.function.InvocationConvention.InvocationReturnConvention;
+import io.prestosql.spi.function.ScalarImplementationChoice;
 import org.testng.annotations.Test;
 
 import java.util.Optional;
 
 import static io.prestosql.metadata.FunctionInvokerProvider.checkChoice;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentType.VALUE_TYPE;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.BLOCK_AND_POSITION;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.RETURN_NULL_ON_NULL;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.USE_BOXED_TYPE;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.USE_NULL_FLAG;
 import static io.prestosql.spi.function.InvocationConvention.InvocationArgumentConvention.BLOCK_POSITION;
 import static io.prestosql.spi.function.InvocationConvention.InvocationArgumentConvention.BOXED_NULLABLE;
 import static io.prestosql.spi.function.InvocationConvention.InvocationArgumentConvention.NEVER_NULL;
 import static io.prestosql.spi.function.InvocationConvention.InvocationArgumentConvention.NULL_FLAG;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentType.VALUE_TYPE;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.BLOCK_AND_POSITION;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.RETURN_NULL_ON_NULL;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.USE_BOXED_TYPE;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.USE_NULL_FLAG;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
@@ -43,50 +43,50 @@ public class TestFunctionInvokerProvider
     {
         assertTrue(checkChoice(
                 ImmutableList.of(
-                        new ArgumentProperty(VALUE_TYPE, Optional.of(USE_BOXED_TYPE), Optional.empty()),
-                        new ArgumentProperty(VALUE_TYPE, Optional.of(USE_BOXED_TYPE), Optional.empty())),
+                        new ScalarImplementationChoice.ArgumentProperty(VALUE_TYPE, Optional.of(USE_BOXED_TYPE), Optional.empty()),
+                        new ScalarImplementationChoice.ArgumentProperty(VALUE_TYPE, Optional.of(USE_BOXED_TYPE), Optional.empty())),
                 true,
                 false,
                 Optional.of(new InvocationConvention(ImmutableList.of(BOXED_NULLABLE, BOXED_NULLABLE), InvocationReturnConvention.NULLABLE_RETURN, false))));
 
         assertTrue(checkChoice(
                 ImmutableList.of(
-                        new ArgumentProperty(VALUE_TYPE, Optional.of(RETURN_NULL_ON_NULL), Optional.empty()),
-                        new ArgumentProperty(VALUE_TYPE, Optional.of(BLOCK_AND_POSITION), Optional.empty()),
-                        new ArgumentProperty(VALUE_TYPE, Optional.of(BLOCK_AND_POSITION), Optional.empty())),
+                        new ScalarImplementationChoice.ArgumentProperty(VALUE_TYPE, Optional.of(RETURN_NULL_ON_NULL), Optional.empty()),
+                        new ScalarImplementationChoice.ArgumentProperty(VALUE_TYPE, Optional.of(BLOCK_AND_POSITION), Optional.empty()),
+                        new ScalarImplementationChoice.ArgumentProperty(VALUE_TYPE, Optional.of(BLOCK_AND_POSITION), Optional.empty())),
                 false,
                 false,
                 Optional.of(new InvocationConvention(ImmutableList.of(NEVER_NULL, BLOCK_POSITION, BLOCK_POSITION), InvocationReturnConvention.FAIL_ON_NULL, false))));
 
         assertTrue(checkChoice(
                 ImmutableList.of(
-                        new ArgumentProperty(VALUE_TYPE, Optional.of(BLOCK_AND_POSITION), Optional.empty()),
-                        new ArgumentProperty(VALUE_TYPE, Optional.of(USE_NULL_FLAG), Optional.empty()),
-                        new ArgumentProperty(VALUE_TYPE, Optional.of(BLOCK_AND_POSITION), Optional.empty())),
+                        new ScalarImplementationChoice.ArgumentProperty(VALUE_TYPE, Optional.of(BLOCK_AND_POSITION), Optional.empty()),
+                        new ScalarImplementationChoice.ArgumentProperty(VALUE_TYPE, Optional.of(USE_NULL_FLAG), Optional.empty()),
+                        new ScalarImplementationChoice.ArgumentProperty(VALUE_TYPE, Optional.of(BLOCK_AND_POSITION), Optional.empty())),
                 false,
                 false,
                 Optional.of(new InvocationConvention(ImmutableList.of(BLOCK_POSITION, NULL_FLAG, BLOCK_POSITION), InvocationReturnConvention.FAIL_ON_NULL, false))));
 
         assertFalse(checkChoice(
                 ImmutableList.of(
-                        new ArgumentProperty(VALUE_TYPE, Optional.of(BLOCK_AND_POSITION), Optional.empty()),
-                        new ArgumentProperty(VALUE_TYPE, Optional.of(USE_BOXED_TYPE), Optional.empty())),
+                        new ScalarImplementationChoice.ArgumentProperty(VALUE_TYPE, Optional.of(BLOCK_AND_POSITION), Optional.empty()),
+                        new ScalarImplementationChoice.ArgumentProperty(VALUE_TYPE, Optional.of(USE_BOXED_TYPE), Optional.empty())),
                 false,
                 false,
                 Optional.of(new InvocationConvention(ImmutableList.of(BLOCK_POSITION, BOXED_NULLABLE), InvocationReturnConvention.NULLABLE_RETURN, false))));
 
         assertFalse(checkChoice(
                 ImmutableList.of(
-                        new ArgumentProperty(VALUE_TYPE, Optional.of(BLOCK_AND_POSITION), Optional.empty()),
-                        new ArgumentProperty(VALUE_TYPE, Optional.of(BLOCK_AND_POSITION), Optional.empty())),
+                        new ScalarImplementationChoice.ArgumentProperty(VALUE_TYPE, Optional.of(BLOCK_AND_POSITION), Optional.empty()),
+                        new ScalarImplementationChoice.ArgumentProperty(VALUE_TYPE, Optional.of(BLOCK_AND_POSITION), Optional.empty())),
                 false,
                 false,
                 Optional.of(new InvocationConvention(ImmutableList.of(BLOCK_POSITION, NULL_FLAG), InvocationReturnConvention.NULLABLE_RETURN, false))));
 
         assertFalse(checkChoice(
                 ImmutableList.of(
-                        new ArgumentProperty(VALUE_TYPE, Optional.of(USE_NULL_FLAG), Optional.empty()),
-                        new ArgumentProperty(VALUE_TYPE, Optional.of(USE_BOXED_TYPE), Optional.empty())),
+                        new ScalarImplementationChoice.ArgumentProperty(VALUE_TYPE, Optional.of(USE_NULL_FLAG), Optional.empty()),
+                        new ScalarImplementationChoice.ArgumentProperty(VALUE_TYPE, Optional.of(USE_BOXED_TYPE), Optional.empty())),
                 true,
                 false,
                 Optional.of(new InvocationConvention(ImmutableList.of(BLOCK_POSITION, BOXED_NULLABLE), InvocationReturnConvention.FAIL_ON_NULL, false))));

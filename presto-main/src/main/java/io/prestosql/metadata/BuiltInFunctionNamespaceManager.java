@@ -208,7 +208,6 @@ import io.prestosql.type.setdigest.SetDigestFunctions;
 import io.prestosql.type.setdigest.SetDigestOperators;
 
 import javax.annotation.concurrent.ThreadSafe;
-
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -298,12 +297,12 @@ import static io.prestosql.operator.window.AggregateWindowFunction.supplier;
 import static io.prestosql.spi.StandardErrorCode.FUNCTION_IMPLEMENTATION_MISSING;
 import static io.prestosql.spi.StandardErrorCode.GENERIC_USER_ERROR;
 import static io.prestosql.spi.connector.CatalogSchemaName.DEFAULT_NAMESPACE;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty.valueTypeArgumentProperty;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.RETURN_NULL_ON_NULL;
 import static io.prestosql.spi.function.FunctionImplementationType.BUILTIN;
 import static io.prestosql.spi.function.FunctionKind.AGGREGATE;
 import static io.prestosql.spi.function.FunctionKind.SCALAR;
 import static io.prestosql.spi.function.FunctionKind.WINDOW;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentProperty.valueTypeArgumentProperty;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.RETURN_NULL_ON_NULL;
 import static io.prestosql.spi.type.TypeSignature.parseTypeSignature;
 import static io.prestosql.sql.analyzer.TypeSignatureProvider.fromTypeSignatures;
 import static io.prestosql.sql.planner.LiteralEncoder.MAGIC_LITERAL_FUNCTION_PREFIX;

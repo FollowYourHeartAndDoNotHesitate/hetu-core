@@ -29,7 +29,7 @@ import java.lang.invoke.MethodHandle;
 
 import static com.google.common.primitives.Primitives.wrap;
 import static io.prestosql.spi.connector.CatalogSchemaName.DEFAULT_NAMESPACE;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty.functionTypeArgumentProperty;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentProperty.functionTypeArgumentProperty;
 import static io.prestosql.spi.function.Signature.typeVariable;
 import static io.prestosql.spi.type.TypeSignature.parseTypeSignature;
 import static io.prestosql.spi.util.Reflection.methodHandle;

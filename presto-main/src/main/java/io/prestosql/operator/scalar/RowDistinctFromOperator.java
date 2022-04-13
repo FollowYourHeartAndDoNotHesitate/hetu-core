@@ -20,9 +20,9 @@ import io.prestosql.metadata.FunctionInvoker;
 import io.prestosql.metadata.SqlOperator;
 import io.prestosql.spi.block.Block;
 import io.prestosql.spi.function.BuiltInScalarFunctionImplementation;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ScalarImplementationChoice;
 import io.prestosql.spi.function.FunctionHandle;
 import io.prestosql.spi.function.InvocationConvention;
+import io.prestosql.spi.function.ScalarImplementationChoice;
 import io.prestosql.spi.type.StandardTypes;
 import io.prestosql.spi.type.Type;
 import io.prestosql.sql.analyzer.TypeSignatureProvider;
@@ -32,11 +32,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Defaults.defaultValue;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty.valueTypeArgumentProperty;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.BLOCK_AND_POSITION;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.USE_NULL_FLAG;
 import static io.prestosql.spi.function.InvocationConvention.InvocationArgumentConvention.NULL_FLAG;
 import static io.prestosql.spi.function.OperatorType.IS_DISTINCT_FROM;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentProperty.valueTypeArgumentProperty;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.BLOCK_AND_POSITION;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.USE_NULL_FLAG;
 import static io.prestosql.spi.function.Signature.comparableWithVariadicBound;
 import static io.prestosql.spi.type.TypeSignature.parseTypeSignature;
 import static io.prestosql.spi.type.TypeUtils.readNativeValue;
@@ -79,13 +79,13 @@ public class RowDistinctFromOperator
                         new ScalarImplementationChoice(
                                 false,
                                 ImmutableList.of(valueTypeArgumentProperty(USE_NULL_FLAG), valueTypeArgumentProperty(USE_NULL_FLAG)),
-                                BuiltInScalarFunctionImplementation.ReturnPlaceConvention.STACK,
+                                ScalarImplementationChoice.ReturnPlaceConvention.STACK,
                                 METHOD_HANDLE_NULL_FLAG.bindTo(type).bindTo(argumentMethods.build()),
                                 Optional.empty()),
                         new ScalarImplementationChoice(
                                 false,
                                 ImmutableList.of(valueTypeArgumentProperty(BLOCK_AND_POSITION), valueTypeArgumentProperty(BLOCK_AND_POSITION)),
-                                BuiltInScalarFunctionImplementation.ReturnPlaceConvention.STACK,
+                                ScalarImplementationChoice.ReturnPlaceConvention.STACK,
                                 METHOD_HANDLE_BLOCK_POSITION.bindTo(type).bindTo(argumentMethods.build()),
                                 Optional.empty())));
     }

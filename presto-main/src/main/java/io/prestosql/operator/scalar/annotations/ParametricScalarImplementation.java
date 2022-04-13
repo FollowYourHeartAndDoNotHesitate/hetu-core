@@ -28,11 +28,9 @@ import io.prestosql.spi.connector.ConnectorSession;
 import io.prestosql.spi.function.BlockIndex;
 import io.prestosql.spi.function.BlockPosition;
 import io.prestosql.spi.function.BuiltInScalarFunctionImplementation;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ScalarImplementationChoice;
 import io.prestosql.spi.function.IsNull;
 import io.prestosql.spi.function.LongVariableConstraint;
+import io.prestosql.spi.function.ScalarImplementationChoice;
 import io.prestosql.spi.function.Signature;
 import io.prestosql.spi.function.SqlNullable;
 import io.prestosql.spi.function.SqlType;
@@ -73,13 +71,13 @@ import static io.prestosql.operator.annotations.ImplementationDependency.checkTy
 import static io.prestosql.operator.annotations.ImplementationDependency.getImplementationDependencyAnnotation;
 import static io.prestosql.operator.annotations.ImplementationDependency.validateImplementationDependencyAnnotation;
 import static io.prestosql.spi.StandardErrorCode.FUNCTION_IMPLEMENTATION_ERROR;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty.functionTypeArgumentProperty;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty.valueTypeArgumentProperty;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentType.VALUE_TYPE;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.BLOCK_AND_POSITION;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.RETURN_NULL_ON_NULL;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.USE_NULL_FLAG;
 import static io.prestosql.spi.function.FunctionKind.SCALAR;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentProperty.functionTypeArgumentProperty;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentProperty.valueTypeArgumentProperty;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentType.VALUE_TYPE;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.BLOCK_AND_POSITION;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.RETURN_NULL_ON_NULL;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.USE_NULL_FLAG;
 import static io.prestosql.spi.type.TypeSignature.parseTypeSignature;
 import static io.prestosql.spi.util.Reflection.constructorMethodHandle;
 import static io.prestosql.spi.util.Reflection.methodHandle;
@@ -227,9 +225,9 @@ public class ParametricScalarImplementation
             methodHandleParameterTypes.add(ConnectorSession.class);
         }
 
-        List<ArgumentProperty> argumentProperties = choice.getArgumentProperties();
+        List<ScalarImplementationChoice.ArgumentProperty> argumentProperties = choice.getArgumentProperties();
         for (int i = 0; i < argumentProperties.size(); i++) {
-            ArgumentProperty argumentProperty = argumentProperties.get(i);
+            ScalarImplementationChoice.ArgumentProperty argumentProperty = argumentProperties.get(i);
             switch (argumentProperty.getArgumentType()) {
                 case VALUE_TYPE:
                     Type signatureType = typeManager.getType(signature.getArgumentTypes().get(i));
@@ -305,8 +303,8 @@ public class ParametricScalarImplementation
             implements Comparable<ParametricScalarImplementationChoice>
     {
         private final boolean nullable;
-        private final List<ArgumentProperty> argumentProperties;
-        private final BuiltInScalarFunctionImplementation.ReturnPlaceConvention returnPlaceConvention;
+        private final List<ScalarImplementationChoice.ArgumentProperty> argumentProperties;
+        private final ScalarImplementationChoice.ReturnPlaceConvention returnPlaceConvention;
         private final MethodHandle methodHandle;
         private final Optional<MethodHandle> constructor;
         private final List<ImplementationDependency> dependencies;
@@ -317,8 +315,8 @@ public class ParametricScalarImplementation
         private ParametricScalarImplementationChoice(
                 boolean nullable,
                 boolean hasConnectorSession,
-                List<ArgumentProperty> argumentProperties,
-                BuiltInScalarFunctionImplementation.ReturnPlaceConvention returnPlaceConvention,
+                List<ScalarImplementationChoice.ArgumentProperty> argumentProperties,
+                ScalarImplementationChoice.ReturnPlaceConvention returnPlaceConvention,
                 MethodHandle methodHandle,
                 Optional<MethodHandle> constructor,
                 List<ImplementationDependency> dependencies,
@@ -334,7 +332,7 @@ public class ParametricScalarImplementation
             this.constructorDependencies = ImmutableList.copyOf(requireNonNull(constructorDependencies, "constructorDependencies is null"));
 
             int cnt = 0;
-            for (ArgumentProperty argumentProperty : argumentProperties) {
+            for (ScalarImplementationChoice.ArgumentProperty argumentProperty : argumentProperties) {
                 if (argumentProperty.getArgumentType() == VALUE_TYPE && argumentProperty.getNullConvention().equals(BLOCK_AND_POSITION)) {
                     cnt++;
                 }
@@ -363,12 +361,12 @@ public class ParametricScalarImplementation
             return dependencies;
         }
 
-        public List<ArgumentProperty> getArgumentProperties()
+        public List<ScalarImplementationChoice.ArgumentProperty> getArgumentProperties()
         {
             return argumentProperties;
         }
 
-        public BuiltInScalarFunctionImplementation.ReturnPlaceConvention getReturnPlaceConvention()
+        public ScalarImplementationChoice.ReturnPlaceConvention getReturnPlaceConvention()
         {
             return returnPlaceConvention;
         }
@@ -450,7 +448,7 @@ public class ParametricScalarImplementation
     {
         private final ScalarImplementationHeader header;
         private final boolean nullable;
-        private final List<ArgumentProperty> argumentProperties = new ArrayList<>();
+        private final List<ScalarImplementationChoice.ArgumentProperty> argumentProperties = new ArrayList<>();
         private final TypeSignature returnType;
         private final List<TypeSignature> argumentTypes = new ArrayList<>();
         private final List<Optional<Class<?>>> argumentNativeContainerTypes = new ArrayList<>();
@@ -516,7 +514,7 @@ public class ParametricScalarImplementation
                     nullable,
                     hasSqlFunctionProperties,
                     argumentProperties,
-                    BuiltInScalarFunctionImplementation.ReturnPlaceConvention.STACK, // TODO: support other return place convention
+                    ScalarImplementationChoice.ReturnPlaceConvention.STACK, // TODO: support other return place convention
                     methodHandle,
                     constructorMethodHandle,
                     dependencies,
@@ -573,17 +571,17 @@ public class ParametricScalarImplementation
                     }
                     else {
                         // value type
-                        NullConvention nullConvention;
+                        ScalarImplementationChoice.NullConvention nullConvention;
                         if (Stream.of(annotations).anyMatch(SqlNullable.class::isInstance)) {
                             checkCondition(!parameterType.isPrimitive(), FUNCTION_IMPLEMENTATION_ERROR, "Method [%s] has parameter with primitive type %s annotated with @SqlNullable", method, parameterType.getSimpleName());
 
-                            nullConvention = NullConvention.USE_BOXED_TYPE;
+                            nullConvention = ScalarImplementationChoice.NullConvention.USE_BOXED_TYPE;
                         }
                         else if (Stream.of(annotations).anyMatch(BlockPosition.class::isInstance)) {
                             checkState(method.getParameterCount() > (i + 1));
                             checkState(parameterType == Block.class);
 
-                            nullConvention = NullConvention.BLOCK_AND_POSITION;
+                            nullConvention = BLOCK_AND_POSITION;
                             Annotation[] parameterAnnotations = method.getParameterAnnotations()[i + 1];
                             checkState(Stream.of(parameterAnnotations).anyMatch(BlockIndex.class::isInstance));
                         }

@@ -43,7 +43,7 @@ import static io.prestosql.metadata.CastType.CAST;
 import static io.prestosql.metadata.CastType.JSON_TO_ARRAY_CAST;
 import static io.prestosql.metadata.CastType.JSON_TO_MAP_CAST;
 import static io.prestosql.metadata.CastType.JSON_TO_ROW_CAST;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.RETURN_NULL_ON_NULL;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.RETURN_NULL_ON_NULL;
 import static io.prestosql.spi.relation.SpecialForm.Form.BIND;
 import static io.prestosql.spi.type.BooleanType.BOOLEAN;
 import static io.prestosql.spi.type.StandardTypes.ARRAY;

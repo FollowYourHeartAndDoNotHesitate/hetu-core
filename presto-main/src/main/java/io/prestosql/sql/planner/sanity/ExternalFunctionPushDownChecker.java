@@ -258,9 +258,9 @@ public class ExternalFunctionPushDownChecker
         @Override
         public Void visitCall(CallExpression call, Set<String> context)
         {
-            if (!isDefaultFunction(call)) {
-                context.add(call.getDisplayName());
-            }
+//            if (!isDefaultFunction(call)) {
+//                context.add(call.getDisplayName());
+//            }
             call.getArguments().forEach(argument -> {
                 if (!isOriginalExpression(argument)) {
                     argument.accept(this, context);

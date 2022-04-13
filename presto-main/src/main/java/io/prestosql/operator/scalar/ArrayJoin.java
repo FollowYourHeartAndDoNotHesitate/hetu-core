@@ -27,8 +27,8 @@ import io.prestosql.spi.block.BlockBuilder;
 import io.prestosql.spi.connector.ConnectorSession;
 import io.prestosql.spi.connector.QualifiedObjectName;
 import io.prestosql.spi.function.BuiltInScalarFunctionImplementation;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty;
 import io.prestosql.spi.function.FunctionKind;
+import io.prestosql.spi.function.ScalarImplementationChoice;
 import io.prestosql.spi.function.Signature;
 import io.prestosql.spi.type.StandardTypes;
 import io.prestosql.spi.type.Type;
@@ -46,9 +46,9 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.prestosql.spi.StandardErrorCode.GENERIC_INTERNAL_ERROR;
 import static io.prestosql.spi.StandardErrorCode.INVALID_FUNCTION_ARGUMENT;
 import static io.prestosql.spi.connector.CatalogSchemaName.DEFAULT_NAMESPACE;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty.valueTypeArgumentProperty;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.RETURN_NULL_ON_NULL;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.USE_BOXED_TYPE;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentProperty.valueTypeArgumentProperty;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.RETURN_NULL_ON_NULL;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.USE_BOXED_TYPE;
 import static io.prestosql.spi.function.Signature.typeVariable;
 import static io.prestosql.spi.type.TypeSignature.parseTypeSignature;
 import static io.prestosql.spi.type.VarcharType.VARCHAR;
@@ -174,7 +174,7 @@ public final class ArrayJoin
     private static BuiltInScalarFunctionImplementation specializeArrayJoin(Map<String, Type> types, FunctionAndTypeManager functionAndTypeManager, List<Boolean> nullableArguments, MethodHandle methodHandle)
     {
         Type type = types.get("T");
-        List<ArgumentProperty> argumentProperties = nullableArguments.stream()
+        List<ScalarImplementationChoice.ArgumentProperty> argumentProperties = nullableArguments.stream()
                 .map(nullable -> nullable
                         ? valueTypeArgumentProperty(USE_BOXED_TYPE)
                         : valueTypeArgumentProperty(RETURN_NULL_ON_NULL))

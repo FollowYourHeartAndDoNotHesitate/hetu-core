@@ -13,6 +13,21 @@
  */
 package io.prestosql.spi.function;
 
+import java.lang.invoke.MethodHandle;
+
+import static io.prestosql.spi.function.InvocationConvention.InvocationReturnConvention.NULLABLE_RETURN;
+
 public interface ScalarFunctionImplementation
 {
+    default InvocationConvention getInvocationConvention() {
+        throw new UnsupportedOperationException("Not support this ScalarFunctionImplementation to get InvocationConvention");
+    }
+
+    default MethodHandle getMethodHandle() {
+        throw new UnsupportedOperationException("Not support this ScalarFunctionImplementation to get MethodHandle");
+    }
+    default boolean isNullable()
+    {
+        return getInvocationConvention().getReturnConvention().equals(NULLABLE_RETURN);
+    }
 }

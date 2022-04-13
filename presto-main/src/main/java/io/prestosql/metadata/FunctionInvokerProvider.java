@@ -16,24 +16,22 @@ package io.prestosql.metadata;
 import com.google.common.annotations.VisibleForTesting;
 import io.prestosql.spi.PrestoException;
 import io.prestosql.spi.function.BuiltInScalarFunctionImplementation;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ScalarImplementationChoice;
 import io.prestosql.spi.function.FunctionHandle;
 import io.prestosql.spi.function.InvocationConvention;
 import io.prestosql.spi.function.InvocationConvention.InvocationArgumentConvention;
 import io.prestosql.spi.function.InvocationConvention.InvocationReturnConvention;
+import io.prestosql.spi.function.ScalarImplementationChoice;
 
 import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
 import static io.prestosql.spi.StandardErrorCode.FUNCTION_NOT_FOUND;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentType.FUNCTION_TYPE;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.BLOCK_AND_POSITION;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.RETURN_NULL_ON_NULL;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.USE_BOXED_TYPE;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.USE_NULL_FLAG;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentType.FUNCTION_TYPE;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.BLOCK_AND_POSITION;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.RETURN_NULL_ON_NULL;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.USE_BOXED_TYPE;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.USE_NULL_FLAG;
 import static java.lang.String.format;
 
 public class FunctionInvokerProvider
@@ -58,11 +56,11 @@ public class FunctionInvokerProvider
     }
 
     @VisibleForTesting
-    static boolean checkChoice(List<ArgumentProperty> definitionArgumentProperties, boolean definitionReturnsNullable, boolean definitionHasSession, Optional<InvocationConvention> invocationConvention)
+    static boolean checkChoice(List<ScalarImplementationChoice.ArgumentProperty> definitionArgumentProperties, boolean definitionReturnsNullable, boolean definitionHasSession, Optional<InvocationConvention> invocationConvention)
     {
         for (int i = 0; i < definitionArgumentProperties.size(); i++) {
             InvocationArgumentConvention invocationArgumentConvention = invocationConvention.get().getArgumentConvention(i);
-            NullConvention nullConvention = definitionArgumentProperties.get(i).getNullConvention();
+            ScalarImplementationChoice.NullConvention nullConvention = definitionArgumentProperties.get(i).getNullConvention();
 
             // return false because function types do not have a null convention
             if (definitionArgumentProperties.get(i).getArgumentType() == FUNCTION_TYPE) {

@@ -17,8 +17,8 @@ import com.google.common.base.Defaults;
 import io.prestosql.metadata.FunctionAndTypeManager;
 import io.prestosql.spi.connector.ConnectorSession;
 import io.prestosql.spi.function.BuiltInScalarFunctionImplementation;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty;
 import io.prestosql.spi.function.FunctionHandle;
+import io.prestosql.spi.function.ScalarImplementationChoice;
 
 import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
@@ -26,9 +26,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.base.Throwables.throwIfUnchecked;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentType.VALUE_TYPE;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.RETURN_NULL_ON_NULL;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.USE_NULL_FLAG;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentType.VALUE_TYPE;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.RETURN_NULL_ON_NULL;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.USE_NULL_FLAG;
 import static java.lang.invoke.MethodHandleProxies.asInterfaceInstance;
 import static java.util.Objects.requireNonNull;
 
@@ -69,7 +69,7 @@ public class InterpretedFunctionInvoker
         List<Object> actualArguments = new ArrayList<>();
         for (int i = 0; i < arguments.size(); i++) {
             Object argument = arguments.get(i);
-            ArgumentProperty argumentProperty = function.getArgumentProperty(i);
+            ScalarImplementationChoice.ArgumentProperty argumentProperty = function.getArgumentProperty(i);
             if (argumentProperty.getArgumentType() == VALUE_TYPE) {
                 if (function.getArgumentProperty(i).getNullConvention() == RETURN_NULL_ON_NULL) {
                     if (argument == null) {

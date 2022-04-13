@@ -15,9 +15,8 @@ package io.prestosql.metadata;
 
 import com.google.common.collect.ImmutableList;
 import io.prestosql.metadata.PolymorphicScalarFunction.PolymorphicScalarFunctionChoice;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty;
 import io.prestosql.spi.function.OperatorType;
+import io.prestosql.spi.function.ScalarImplementationChoice;
 import io.prestosql.spi.function.Signature;
 import io.prestosql.spi.type.Type;
 
@@ -31,9 +30,9 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty.valueTypeArgumentProperty;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.BLOCK_AND_POSITION;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.RETURN_NULL_ON_NULL;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentProperty.valueTypeArgumentProperty;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.BLOCK_AND_POSITION;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.RETURN_NULL_ON_NULL;
 import static java.util.Arrays.asList;
 import static java.util.Collections.nCopies;
 import static java.util.Objects.requireNonNull;
@@ -187,12 +186,12 @@ public final class PolymorphicScalarFunctionBuilder
     {
         private final Class<?> clazz;
         private final Signature signature;
-        private List<ArgumentProperty> argumentProperties;
+        private List<ScalarImplementationChoice.ArgumentProperty> argumentProperties;
         private final ImmutableList.Builder<MethodAndNativeContainerTypes> methodAndNativeContainerTypesList = ImmutableList.builder();
 
         private Optional<Function<SpecializeContext, List<Object>>> extraParametersFunction = Optional.empty();
 
-        private MethodsGroupBuilder(Class<?> clazz, Signature signature, List<ArgumentProperty> argumentProperties)
+        private MethodsGroupBuilder(Class<?> clazz, Signature signature, List<ScalarImplementationChoice.ArgumentProperty> argumentProperties)
         {
             this.clazz = clazz;
             this.signature = signature;
@@ -236,11 +235,11 @@ public final class PolymorphicScalarFunctionBuilder
                     types.size(), argumentSize);
             checkState(types.size() == argumentProperties.size(), "not matching number of arguments from argument properties: %s (should have %s)",
                     types.size(), argumentProperties.size());
-            Iterator<ArgumentProperty> argumentPropertyIterator = argumentProperties.iterator();
+            Iterator<ScalarImplementationChoice.ArgumentProperty> argumentPropertyIterator = argumentProperties.iterator();
             Iterator<Optional<Class<?>>> typesIterator = types.iterator();
             while (argumentPropertyIterator.hasNext() && typesIterator.hasNext()) {
                 Optional<Class<?>> classOptional = typesIterator.next();
-                ArgumentProperty argumentProperty = argumentPropertyIterator.next();
+                ScalarImplementationChoice.ArgumentProperty argumentProperty = argumentPropertyIterator.next();
                 checkState((argumentProperty.getNullConvention() == BLOCK_AND_POSITION) == classOptional.isPresent(),
                         "Explicit type is not set when null convention is BLOCK_AND_POSITION");
             }
@@ -259,8 +258,8 @@ public final class PolymorphicScalarFunctionBuilder
         private final Class<?> clazz;
         private final Signature signature;
         private boolean nullableResult;
-        private List<ArgumentProperty> argumentProperties;
-        private BuiltInScalarFunctionImplementation.ReturnPlaceConvention returnPlaceConvention;
+        private List<ScalarImplementationChoice.ArgumentProperty> argumentProperties;
+        private ScalarImplementationChoice.ReturnPlaceConvention returnPlaceConvention;
         private final ImmutableList.Builder<MethodsGroup> methodsGroups = ImmutableList.builder();
 
         private ChoiceBuilder(Class<?> clazz, Signature signature)
@@ -277,7 +276,7 @@ public final class PolymorphicScalarFunctionBuilder
             }
             // if the returnPlaceConvention is not set yet. We assume it is set to the default value.
             if (returnPlaceConvention == null) {
-                returnPlaceConvention = BuiltInScalarFunctionImplementation.ReturnPlaceConvention.STACK;
+                returnPlaceConvention = ScalarImplementationChoice.ReturnPlaceConvention.STACK;
             }
             MethodsGroupBuilder methodsGroupBuilder = new MethodsGroupBuilder(clazz, signature, argumentProperties);
             methodsGroupSpecification.apply(methodsGroupBuilder);
@@ -291,7 +290,7 @@ public final class PolymorphicScalarFunctionBuilder
             return this;
         }
 
-        public ChoiceBuilder argumentProperties(ArgumentProperty... argumentProperties)
+        public ChoiceBuilder argumentProperties(ScalarImplementationChoice.ArgumentProperty... argumentProperties)
         {
             requireNonNull(argumentProperties, "argumentProperties is null");
             checkState(this.argumentProperties == null,
@@ -300,7 +299,7 @@ public final class PolymorphicScalarFunctionBuilder
             return this;
         }
 
-        public ChoiceBuilder returnPlaceConvention(BuiltInScalarFunctionImplementation.ReturnPlaceConvention returnPlaceConvention)
+        public ChoiceBuilder returnPlaceConvention(ScalarImplementationChoice.ReturnPlaceConvention returnPlaceConvention)
         {
             requireNonNull(returnPlaceConvention, "returnPlaceConvention is null");
             checkState(this.returnPlaceConvention == null,

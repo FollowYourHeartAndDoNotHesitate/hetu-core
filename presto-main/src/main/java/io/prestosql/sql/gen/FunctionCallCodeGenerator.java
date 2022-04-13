@@ -15,8 +15,9 @@ package io.prestosql.sql.gen;
 
 import io.airlift.bytecode.BytecodeNode;
 import io.prestosql.metadata.FunctionAndTypeManager;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation;
 import io.prestosql.spi.function.FunctionHandle;
+import io.prestosql.spi.function.ScalarFunctionImplementation;
+import io.prestosql.spi.function.ScalarImplementationChoice;
 import io.prestosql.spi.relation.RowExpression;
 import io.prestosql.spi.type.Type;
 
@@ -24,7 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentType.VALUE_TYPE;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentType.VALUE_TYPE;
+import static io.prestosql.sql.gen.BytecodeUtils.getAllScalarFunctionImplementationChoices;
 
 public class FunctionCallCodeGenerator
         implements BytecodeGenerator
@@ -34,12 +36,14 @@ public class FunctionCallCodeGenerator
     {
         FunctionAndTypeManager functionAndTypeManager = context.getFunctionManager();
 
-        BuiltInScalarFunctionImplementation function = functionAndTypeManager.getBuiltInScalarFunctionImplementation(functionHandle);
+        ScalarFunctionImplementation function = functionAndTypeManager.getScalarFunctionImplementation(functionHandle);
 
         List<BytecodeNode> argumentsBytecode = new ArrayList<>();
+        ScalarImplementationChoice choice = getAllScalarFunctionImplementationChoices(function).get(0);
+
         for (int i = 0; i < arguments.size(); i++) {
             RowExpression argument = arguments.get(i);
-            BuiltInScalarFunctionImplementation.ArgumentProperty argumentProperty = function.getArgumentProperty(i);
+            ScalarImplementationChoice.ArgumentProperty argumentProperty = choice.getArgumentProperty(i);
             if (argumentProperty.getArgumentType() == VALUE_TYPE) {
                 argumentsBytecode.add(context.generate(argument));
             }

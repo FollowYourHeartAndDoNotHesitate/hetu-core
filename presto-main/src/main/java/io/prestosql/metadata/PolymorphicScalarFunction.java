@@ -19,9 +19,7 @@ import io.prestosql.metadata.PolymorphicScalarFunctionBuilder.MethodAndNativeCon
 import io.prestosql.metadata.PolymorphicScalarFunctionBuilder.MethodsGroup;
 import io.prestosql.metadata.PolymorphicScalarFunctionBuilder.SpecializeContext;
 import io.prestosql.spi.function.BuiltInScalarFunctionImplementation;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ScalarImplementationChoice;
+import io.prestosql.spi.function.ScalarImplementationChoice;
 import io.prestosql.spi.function.Signature;
 import io.prestosql.spi.type.Type;
 import io.prestosql.spi.util.Reflection;
@@ -34,8 +32,8 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
 import static io.prestosql.metadata.SignatureBinder.applyBoundVariables;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.BLOCK_AND_POSITION;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.USE_NULL_FLAG;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.BLOCK_AND_POSITION;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.USE_NULL_FLAG;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -135,7 +133,7 @@ class PolymorphicScalarFunction
             MethodAndNativeContainerTypes methodAndNativeContainerTypes,
             List<Type> resolvedTypes,
             Type returnType,
-            List<ArgumentProperty> argumentProperties,
+            List<ScalarImplementationChoice.ArgumentProperty> argumentProperties,
             boolean nullableResult)
     {
         Method method = methodAndNativeContainerTypes.getMethod();
@@ -144,7 +142,7 @@ class PolymorphicScalarFunction
 
         Class<?>[] methodParameterJavaTypes = method.getParameterTypes();
         for (int i = 0, methodParameterIndex = 0; i < resolvedTypes.size(); i++) {
-            NullConvention nullConvention = argumentProperties.get(i).getNullConvention();
+            ScalarImplementationChoice.NullConvention nullConvention = argumentProperties.get(i).getNullConvention();
             Class<?> expectedType = null;
             Class<?> actualType;
             switch (nullConvention) {
@@ -180,21 +178,21 @@ class PolymorphicScalarFunction
         return methodsGroup.getExtraParametersFunction().map(function -> function.apply(context)).orElse(emptyList());
     }
 
-    private static int getNullFlagsCount(List<ArgumentProperty> argumentProperties)
+    private static int getNullFlagsCount(List<ScalarImplementationChoice.ArgumentProperty> argumentProperties)
     {
         return (int) argumentProperties.stream()
                 .filter(argumentProperty -> argumentProperty.getNullConvention() == USE_NULL_FLAG)
                 .count();
     }
 
-    private static int getBlockPositionCount(List<ArgumentProperty> argumentProperties)
+    private static int getBlockPositionCount(List<ScalarImplementationChoice.ArgumentProperty> argumentProperties)
     {
         return (int) argumentProperties.stream()
                 .filter(argumentProperty -> argumentProperty.getNullConvention() == BLOCK_AND_POSITION)
                 .count();
     }
 
-    private MethodHandle applyExtraParameters(Method matchingMethod, List<Object> extraParameters, List<ArgumentProperty> argumentProperties)
+    private MethodHandle applyExtraParameters(Method matchingMethod, List<Object> extraParameters, List<ScalarImplementationChoice.ArgumentProperty> argumentProperties)
     {
         Signature signature = getSignature();
         int expectedArgumentsCount = signature.getArgumentTypes().size() + getNullFlagsCount(argumentProperties) + getBlockPositionCount(argumentProperties) + extraParameters.size();
@@ -221,14 +219,14 @@ class PolymorphicScalarFunction
     static final class PolymorphicScalarFunctionChoice
     {
         private final boolean nullableResult;
-        private final List<ArgumentProperty> argumentProperties;
-        private final BuiltInScalarFunctionImplementation.ReturnPlaceConvention returnPlaceConvention;
+        private final List<ScalarImplementationChoice.ArgumentProperty> argumentProperties;
+        private final ScalarImplementationChoice.ReturnPlaceConvention returnPlaceConvention;
         private final List<MethodsGroup> methodsGroups;
 
         PolymorphicScalarFunctionChoice(
                 boolean nullableResult,
-                List<ArgumentProperty> argumentProperties,
-                BuiltInScalarFunctionImplementation.ReturnPlaceConvention returnPlaceConvention,
+                List<ScalarImplementationChoice.ArgumentProperty> argumentProperties,
+                ScalarImplementationChoice.ReturnPlaceConvention returnPlaceConvention,
                 List<MethodsGroup> methodsGroups)
         {
             this.nullableResult = nullableResult;
@@ -247,12 +245,12 @@ class PolymorphicScalarFunction
             return methodsGroups;
         }
 
-        List<ArgumentProperty> getArgumentProperties()
+        List<ScalarImplementationChoice.ArgumentProperty> getArgumentProperties()
         {
             return argumentProperties;
         }
 
-        BuiltInScalarFunctionImplementation.ReturnPlaceConvention getReturnPlaceConvention()
+        ScalarImplementationChoice.ReturnPlaceConvention getReturnPlaceConvention()
         {
             return returnPlaceConvention;
         }

@@ -20,9 +20,9 @@ import io.prestosql.metadata.FunctionAndTypeManager;
 import io.prestosql.metadata.SqlScalarFunction;
 import io.prestosql.spi.connector.QualifiedObjectName;
 import io.prestosql.spi.function.BuiltInScalarFunctionImplementation;
-import io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty;
 import io.prestosql.spi.function.FunctionHandle;
 import io.prestosql.spi.function.FunctionKind;
+import io.prestosql.spi.function.ScalarImplementationChoice;
 import io.prestosql.spi.function.Signature;
 import io.prestosql.spi.type.Type;
 
@@ -81,7 +81,7 @@ public class TryCastFunction
         Type toType = boundVariables.getTypeVariable("T");
 
         Class<?> returnType = Primitives.wrap(toType.getJavaType());
-        List<ArgumentProperty> argumentProperties;
+        List<ScalarImplementationChoice.ArgumentProperty> argumentProperties;
         MethodHandle tryCastHandle;
 
         // the resulting method needs to return a boxed type

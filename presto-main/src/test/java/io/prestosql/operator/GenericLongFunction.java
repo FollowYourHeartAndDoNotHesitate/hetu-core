@@ -23,8 +23,8 @@ import io.prestosql.spi.function.BuiltInScalarFunctionImplementation;
 import java.lang.invoke.MethodHandle;
 import java.util.function.LongUnaryOperator;
 
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.ArgumentProperty.valueTypeArgumentProperty;
-import static io.prestosql.spi.function.BuiltInScalarFunctionImplementation.NullConvention.RETURN_NULL_ON_NULL;
+import static io.prestosql.spi.function.ScalarImplementationChoice.ArgumentProperty.valueTypeArgumentProperty;
+import static io.prestosql.spi.function.ScalarImplementationChoice.NullConvention.RETURN_NULL_ON_NULL;
 import static io.prestosql.spi.function.Signature.internalScalarFunction;
 import static io.prestosql.spi.type.StandardTypes.BIGINT;
 import static io.prestosql.spi.type.TypeSignature.parseTypeSignature;
