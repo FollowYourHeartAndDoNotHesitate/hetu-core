@@ -27,6 +27,7 @@ import io.prestosql.spi.function.FunctionHandle;
 import io.prestosql.spi.function.FunctionMetadata;
 import io.prestosql.spi.function.FunctionNamespaceManager;
 import io.prestosql.spi.function.FunctionNamespaceTransactionHandle;
+import io.prestosql.spi.function.HiveFunctionHandle;
 import io.prestosql.spi.function.ScalarFunctionImplementation;
 import io.prestosql.spi.function.Signature;
 import io.prestosql.spi.function.SqlInvokedFunction;

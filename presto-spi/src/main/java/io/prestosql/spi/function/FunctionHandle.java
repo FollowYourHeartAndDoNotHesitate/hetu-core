@@ -27,7 +27,8 @@ import io.prestosql.spi.connector.CatalogSchemaName;
         property = "@type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = SqlFunctionHandle.class, name = "sqlFunction"),
-        @JsonSubTypes.Type(value = BuiltInFunctionHandle.class, name = "builtInFunction")})
+        @JsonSubTypes.Type(value = BuiltInFunctionHandle.class, name = "builtInFunction"),
+        @JsonSubTypes.Type(value = HiveFunctionHandle.class, name = "hiveFunctionHandle")})
 public interface FunctionHandle
 {
     CatalogSchemaName getFunctionNamespace();
