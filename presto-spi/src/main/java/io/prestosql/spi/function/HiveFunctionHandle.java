@@ -12,13 +12,11 @@
  * limitations under the License.
  */
 
-package io.prestosql.plugin.hive.functions;
+package io.prestosql.spi.function;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.prestosql.spi.connector.CatalogSchemaName;
-import io.prestosql.spi.function.FunctionHandle;
-import io.prestosql.spi.function.Signature;
 
 import java.util.Objects;
 
