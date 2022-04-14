@@ -31,6 +31,7 @@ import static io.prestosql.plugin.hive.functions.scalar.HiveScalarFunctionInvoke
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.prestosql.spi.function.FunctionKind.SCALAR;
 import static io.prestosql.spi.function.InvocationConvention.InvocationArgumentConvention.BOXED_NULLABLE;
+import static io.prestosql.spi.function.InvocationConvention.InvocationReturnConvention.NULLABLE_RETURN;
 import static java.util.Objects.requireNonNull;
 
 public class HiveScalarFunction
@@ -69,7 +70,7 @@ public class HiveScalarFunction
                 true);
         InvocationConvention invocationConvention = new InvocationConvention(
                 signature.getArgumentTypes().stream().map(t -> BOXED_NULLABLE).collect(toImmutableList()),
-                InvocationConvention.InvocationReturnConvention.NULLABLE_RETURN,
+                NULLABLE_RETURN,
                 false);
         ScalarFunctionImplementation implementation = new HiveScalarFunctionImplementation(methodHandle, invocationConvention);
         return new HiveScalarFunction(functionMetadata, signature, name.getObjectName(), implementation);
@@ -103,14 +104,22 @@ public class HiveScalarFunction
             this.invocationConvention = requireNonNull(invocationConvention, "invocationConvention is null");
         }
 
+        @Override
         public InvocationConvention getInvocationConvention()
         {
             return invocationConvention;
         }
 
+        @Override
         public MethodHandle getMethodHandle()
         {
             return methodHandle;
+        }
+
+        @Override
+        public boolean isNullable()
+        {
+            return getInvocationConvention().getReturnConvention().equals(NULLABLE_RETURN);
         }
     }
 }
