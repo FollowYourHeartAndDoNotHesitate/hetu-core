@@ -16,6 +16,7 @@ package io.prestosql.plugin.hive.functions;
 
 import com.google.inject.Injector;
 import io.airlift.bootstrap.Bootstrap;
+import io.prestosql.spi.PrestoException;
 import io.prestosql.spi.classloader.ThreadContextClassLoader;
 import io.prestosql.spi.function.FunctionHandleResolver;
 import io.prestosql.spi.function.FunctionNamespaceManager;
@@ -24,6 +25,7 @@ import io.prestosql.spi.function.FunctionNamespaceManagerFactory;
 
 import java.util.Map;
 
+import static io.prestosql.plugin.hive.functions.HiveFunctionErrorCode.unsupportedNamespace;
 import static java.util.Objects.requireNonNull;
 
 public class HiveFunctionNamespaceManagerFactory
@@ -57,7 +59,11 @@ public class HiveFunctionNamespaceManagerFactory
     {
         requireNonNull(config, "config is null");
 
+
         try (ThreadContextClassLoader ignored = new ThreadContextClassLoader(classLoader)) {
+            if (!catalogName.equals("hive")) {
+                throw unsupportedNamespace(catalogName);
+            }
             Bootstrap app = new Bootstrap(
                     new HiveFunctionModule(catalogName, classLoader, functionNamespaceManagerContext.getTypeManager().get()));
 
@@ -67,6 +73,8 @@ public class HiveFunctionNamespaceManagerFactory
                     .quiet()
                     .initialize();
             return injector.getInstance(FunctionNamespaceManager.class);
+        } catch (PrestoException e) {
+            throw e;
         }
     }
 }

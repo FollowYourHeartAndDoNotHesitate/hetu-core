@@ -18,6 +18,7 @@ import io.prestosql.spi.ErrorCode;
 import io.prestosql.spi.ErrorCodeSupplier;
 import io.prestosql.spi.ErrorType;
 import io.prestosql.spi.PrestoException;
+import io.prestosql.spi.connector.QualifiedObjectName;
 import io.prestosql.spi.type.Type;
 import io.prestosql.spi.type.TypeSignature;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
@@ -34,6 +35,7 @@ public enum HiveFunctionErrorCode
     HIVE_FUNCTION_UNSUPPORTED_FUNCTION_TYPE(2, EXTERNAL),
     HIVE_FUNCTION_INITIALIZATION_ERROR(3, EXTERNAL),
     HIVE_FUNCTION_EXECUTION_ERROR(4, EXTERNAL),
+    HIVE_FUNCTION_UNSUPPORTED_NAMESPACE(5, EXTERNAL),
     /**/;
 
     private static final int ERROR_CODE_MASK = 0x0110_0000;
@@ -76,6 +78,18 @@ public enum HiveFunctionErrorCode
     {
         return new PrestoException(HIVE_FUNCTION_UNSUPPORTED_FUNCTION_TYPE,
                 format("Unsupported function type %s / %s", cls.getName(), cls.getSuperclass().getName()), t);
+    }
+
+    public static PrestoException unsupportedNamespace(QualifiedObjectName name)
+    {
+        return new PrestoException(HIVE_FUNCTION_UNSUPPORTED_NAMESPACE, "Hive udf unsupported namespace " + name.getCatalogSchemaName()
+                + ". It should start with hive.default.");
+    }
+
+    public static PrestoException unsupportedNamespace(String catalogName)
+    {
+        return new PrestoException(HIVE_FUNCTION_UNSUPPORTED_NAMESPACE, "Hive udf unsupported catalog name " + catalogName
+                + ". The configuration file should be changed to hive.properties.");
     }
 
     public static PrestoException functionNotFound(String name)

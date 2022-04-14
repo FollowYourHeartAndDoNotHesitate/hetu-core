@@ -27,8 +27,8 @@ import io.prestosql.spi.type.TypeSignature;
 import java.lang.invoke.MethodHandle;
 import java.util.List;
 
-import static io.prestosql.plugin.hive.functions.scalar.HiveScalarFunctionInvoker.createFunctionInvoker;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.prestosql.plugin.hive.functions.scalar.HiveScalarFunctionInvoker.createFunctionInvoker;
 import static io.prestosql.spi.function.FunctionKind.SCALAR;
 import static io.prestosql.spi.function.InvocationConvention.InvocationArgumentConvention.BOXED_NULLABLE;
 import static io.prestosql.spi.function.InvocationConvention.InvocationReturnConvention.NULLABLE_RETURN;
