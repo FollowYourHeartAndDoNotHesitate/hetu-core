@@ -14,24 +14,74 @@
 package io.prestosql.plugin.hive.functions;
 
 import com.google.common.collect.ImmutableList;
+import io.airlift.log.Logger;
 import io.prestosql.spi.Plugin;
 import io.prestosql.spi.function.FunctionNamespaceManagerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static io.airlift.configuration.ConfigurationLoader.loadPropertiesFrom;
+import static java.lang.String.format;
 
 public class HiveFunctionNamespacePlugin
         implements Plugin
 {
+    private static final Logger log = Logger.get(HiveFunctionNamespacePlugin.class);
+    private static final String FUNCTION_PROPERTIES_FILE_PATH = format("etc%sfunction-namespace%shive.properties",
+            File.separatorChar, File.separatorChar);
+    public static final String EXTERNAL_FUNCTIONS_DIR = "external-functions.dir";
+
     @Override
     public Iterable<FunctionNamespaceManagerFactory> getFunctionNamespaceManagerFactories()
     {
         return ImmutableList.of(new HiveFunctionNamespaceManagerFactory(getClassLoader()));
     }
 
-    private static ClassLoader getClassLoader()
-    {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (classLoader == null) {
-            classLoader = HiveFunctionNamespacePlugin.class.getClassLoader();
+    private static ClassLoader getClassLoader() {
+        File file = new File(FUNCTION_PROPERTIES_FILE_PATH);
+        if (!file.exists() || file.length() == 0) {
+            log.error("The configuration %s does not exist or is empty. Please check.", FUNCTION_PROPERTIES_FILE_PATH);
         }
-        return classLoader;
+
+        List<URL> urls = new ArrayList<>();
+        try {
+            Map<String, String> config = loadPropertiesFrom(FUNCTION_PROPERTIES_FILE_PATH);
+            urls = getURLs(config.get(EXTERNAL_FUNCTIONS_DIR));
+        } catch (IOException e) {
+            log.error("Read configuration %s fail.", FUNCTION_PROPERTIES_FILE_PATH);
+        }
+        return new URLClassLoader(urls.toArray(new URL[urls.size()]));
+    }
+
+    private static List<URL> getURLs(String externalFunctionsDir)
+    {
+        File dir = new File(externalFunctionsDir);
+        List<URL> urls = new ArrayList<>();
+        String dirName = dir.getName();
+        if (!dir.exists() || !dir.isDirectory()) {
+            log.debug("%s doesn't exist or is not a directory.", dirName);
+            return urls;
+        }
+        File[] files = dir.listFiles();
+        if (files == null || files.length == 0) {
+            log.debug("%s is empty.", dirName);
+            return urls;
+        }
+        for (File file : files) {
+            try {
+                urls.add(file.toURI().toURL());
+            }
+            catch (MalformedURLException e) {
+                log.error("Failed to add %s to URLs of HiveFunctionsClassLoader.", file);
+            }
+        }
+        return urls;
     }
 }

@@ -16,6 +16,7 @@ package io.prestosql.plugin.hive.functions;
 
 import com.google.inject.Injector;
 import io.airlift.bootstrap.Bootstrap;
+import io.airlift.log.Logger;
 import io.prestosql.spi.PrestoException;
 import io.prestosql.spi.classloader.ThreadContextClassLoader;
 import io.prestosql.spi.function.FunctionHandleResolver;
@@ -25,12 +26,17 @@ import io.prestosql.spi.function.FunctionNamespaceManagerFactory;
 
 import java.util.Map;
 
+import static io.prestosql.plugin.hive.functions.FunctionRegistry.addFunction;
+import static io.prestosql.plugin.hive.functions.FunctionRegistry.getCurrentFunctionNames;
 import static io.prestosql.plugin.hive.functions.HiveFunctionErrorCode.unsupportedNamespace;
+import static io.prestosql.plugin.hive.functions.HiveFunctionNamespacePlugin.EXTERNAL_FUNCTIONS_DIR;
 import static java.util.Objects.requireNonNull;
 
 public class HiveFunctionNamespaceManagerFactory
         implements FunctionNamespaceManagerFactory
 {
+    private static final Logger log = Logger.get(HiveFunctionNamespaceManagerFactory.class);
+
     private final ClassLoader classLoader;
     private final FunctionHandleResolver functionHandleResolver;
 
@@ -59,11 +65,25 @@ public class HiveFunctionNamespaceManagerFactory
     {
         requireNonNull(config, "config is null");
 
+        if (!catalogName.equals("hive")) {
+            throw unsupportedNamespace(catalogName);
+        }
 
         try (ThreadContextClassLoader ignored = new ThreadContextClassLoader(classLoader)) {
-            if (!catalogName.equals("hive")) {
-                throw unsupportedNamespace(catalogName);
+            for (String key : config.keySet()) {
+                try {
+                    if (!getCurrentFunctionNames().contains(key)) {
+                        addFunction(key, classLoader.loadClass(config.get(key)));
+                    } else {
+                        log.warn("Function %s alredy exists.", config.get(key));
+                    }
+                } catch (ClassNotFoundException e) {
+                    if (!EXTERNAL_FUNCTIONS_DIR.equals(key)) {
+                        log.warn("Invalid parameter %s or class %s not Found.", key, config.get(key));
+                    }
+                }
             }
+
             Bootstrap app = new Bootstrap(
                     new HiveFunctionModule(catalogName, classLoader, functionNamespaceManagerContext.getTypeManager().get()));
 
@@ -77,4 +97,6 @@ public class HiveFunctionNamespaceManagerFactory
             throw e;
         }
     }
+
+
 }

@@ -14,28 +14,23 @@
 
 package io.prestosql.plugin.hive.functions;
 
+import io.airlift.log.Logger;
 import org.apache.hadoop.hive.ql.exec.FunctionInfo;
 import org.apache.hadoop.hive.ql.exec.Registry;
+import org.apache.hadoop.hive.ql.exec.UDF;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
-import org.apache.hadoop.hive.ql.udf.UDFMd5;
-import org.apache.hadoop.hive.ql.udf.generic.GenericUDFAbs;
-import org.apache.hadoop.hive.ql.udf.generic.GenericUDFLag;
+import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 
 import java.util.Set;
 
 public final class FunctionRegistry
 {
+    private static final Logger log = Logger.get(FunctionRegistry.class);
+
     private FunctionRegistry() {}
 
     // registry for hive functions
     private static final Registry system = new Registry(true);
-
-    static {
-        // register genericUDF
-        system.registerGenericUDF("abs", GenericUDFAbs.class);
-        system.registerGenericUDF("lag", GenericUDFLag.class);
-        system.registerUDF("Md5", UDFMd5.class, false);
-    }
 
     public static FunctionInfo getFunctionInfo(String functionName) throws SemanticException
     {
@@ -45,5 +40,18 @@ public final class FunctionRegistry
     public static Set<String> getCurrentFunctionNames()
     {
         return system.getCurrentFunctionNames();
+    }
+
+    public static void addFunction(String functionName, Class<?> cls)
+    {
+        if (GenericUDF.class.isAssignableFrom(cls)) {
+            system.registerGenericUDF(functionName, (Class<? extends GenericUDF>) cls);
+        }
+        else if (UDF.class.isAssignableFrom(cls)) {
+            system.registerUDF(functionName, (Class<? extends UDF>) cls, false);
+        }
+        else {
+            log.warn("Function %s is not extend from GenericUDF or UDF, please check.", functionName);
+        }
     }
 }
