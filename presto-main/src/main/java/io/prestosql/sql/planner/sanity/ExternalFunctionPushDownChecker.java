@@ -81,7 +81,8 @@ public class ExternalFunctionPushDownChecker
     {
         public static List<CatalogSchemaName> functionNamespaces = new ArrayList<>();
 
-        public ExternalFunctionFinder(FunctionAndTypeManager functionAndTypeManager) {
+        public ExternalFunctionFinder(FunctionAndTypeManager functionAndTypeManager)
+        {
             for (String catalog : functionAndTypeManager.getFunctionNamespaceManagers().keySet()) {
                 CatalogSchemaName namespace = new CatalogSchemaName(catalog, "default");
                 if (!functionNamespaces.contains(namespace)) {

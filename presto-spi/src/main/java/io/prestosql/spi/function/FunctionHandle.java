@@ -13,7 +13,6 @@
  */
 package io.prestosql.spi.function;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.prestosql.spi.connector.CatalogSchemaName;
 
@@ -25,10 +24,6 @@ import io.prestosql.spi.connector.CatalogSchemaName;
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
         property = "@type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = SqlFunctionHandle.class, name = "sqlFunction"),
-        @JsonSubTypes.Type(value = BuiltInFunctionHandle.class, name = "builtInFunction"),
-        @JsonSubTypes.Type(value = HiveFunctionHandle.class, name = "hiveFunctionHandle")})
 public interface FunctionHandle
 {
     CatalogSchemaName getFunctionNamespace();

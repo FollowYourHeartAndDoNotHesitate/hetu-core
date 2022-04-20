@@ -16,7 +16,6 @@ package io.prestosql.plugin.hive.functions;
 
 import io.prestosql.spi.function.FunctionHandle;
 import io.prestosql.spi.function.FunctionHandleResolver;
-import io.prestosql.spi.function.HiveFunctionHandle;
 
 public class HiveFunctionHandleResolver
         implements FunctionHandleResolver

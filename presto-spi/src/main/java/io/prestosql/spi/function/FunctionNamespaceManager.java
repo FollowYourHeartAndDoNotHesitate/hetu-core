@@ -52,6 +52,7 @@ public interface FunctionNamespaceManager<F extends SqlFunction>
      * List all functions managed by the {@link FunctionNamespaceManager}.
      */
     List<F> listFunctions();
+
     List<F> getFunctions(Optional<? extends FunctionNamespaceTransactionHandle> transactionHandle, QualifiedObjectName functionName, List<TypeSignature> parameterTypes);
 
     FunctionHandle getFunctionHandle(Optional<? extends FunctionNamespaceTransactionHandle> transactionHandle, Signature signature);

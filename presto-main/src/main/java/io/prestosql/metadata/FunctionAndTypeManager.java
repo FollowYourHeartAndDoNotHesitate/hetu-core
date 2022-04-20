@@ -239,7 +239,8 @@ public class FunctionAndTypeManager
         return functionInvokerProvider;
     }
 
-    public Map<String, FunctionNamespaceManager<? extends SqlFunction>> getFunctionNamespaceManagers() {
+    public Map<String, FunctionNamespaceManager<? extends SqlFunction>> getFunctionNamespaceManagers()
+    {
         return functionNamespaceManagers;
     }
 

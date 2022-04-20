@@ -93,11 +93,11 @@
         </dependency>
 
         <!-- for testing -->
-<!--        <dependency>-->
-<!--            <groupId>io.airlift</groupId>-->
-<!--            <artifactId>testng</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>io.airlift</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>io.hetu.core</groupId>
@@ -115,34 +115,6 @@
             <groupId>io.hetu.core</groupId>
             <artifactId>presto-memory</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.hetu.core</groupId>
-            <artifactId>presto-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.hetu.core</groupId>
-            <artifactId>presto-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.hetu.core</groupId>
-            <artifactId>presto-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.hetu.core</groupId>
-            <artifactId>presto-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.prestosql.hive</groupId>
-            <artifactId>hive-apache</artifactId>
         </dependency>
         <dependency>
             <groupId>io.airlift</groupId>

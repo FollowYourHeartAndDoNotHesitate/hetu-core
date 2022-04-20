@@ -17,11 +17,13 @@ import java.lang.invoke.MethodHandle;
 
 public interface ScalarFunctionImplementation
 {
-    default InvocationConvention getInvocationConvention() {
+    default InvocationConvention getInvocationConvention()
+    {
         throw new UnsupportedOperationException("Not support this ScalarFunctionImplementation to get InvocationConvention");
     }
 
-    default MethodHandle getMethodHandle() {
+    default MethodHandle getMethodHandle()
+    {
         throw new UnsupportedOperationException("Not support this ScalarFunctionImplementation to get MethodHandle");
     }
 
