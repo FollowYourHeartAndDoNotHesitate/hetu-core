@@ -44,7 +44,7 @@ public class HiveFunctionNamespacePlugin
         return ImmutableList.of(new HiveFunctionNamespaceManagerFactory(getClassLoader()));
     }
 
-    private static ClassLoader getClassLoader() {
+    private ClassLoader getClassLoader() {
         File file = new File(FUNCTION_PROPERTIES_FILE_PATH);
         if (!file.exists() || file.length() == 0) {
             log.error("The configuration %s does not exist or is empty. Please check.", FUNCTION_PROPERTIES_FILE_PATH);
@@ -57,10 +57,10 @@ public class HiveFunctionNamespacePlugin
         } catch (IOException e) {
             log.error("Read configuration %s fail.", FUNCTION_PROPERTIES_FILE_PATH);
         }
-        return new URLClassLoader(urls.toArray(new URL[urls.size()]));
+        return new URLClassLoader(urls.toArray(new URL[urls.size()]), HiveFunctionNamespacePlugin.class.getClassLoader());
     }
 
-    private static List<URL> getURLs(String externalFunctionsDir)
+    private List<URL> getURLs(String externalFunctionsDir)
     {
         File dir = new File(externalFunctionsDir);
         List<URL> urls = new ArrayList<>();
