@@ -14,6 +14,7 @@
 package io.prestosql.plugin.hive.functions;
 
 import javax.inject.Qualifier;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 

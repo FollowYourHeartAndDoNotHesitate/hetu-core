@@ -51,8 +51,8 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static io.prestosql.plugin.hive.functions.HiveFunctionErrorCode.unsupportedType;
 import static com.google.common.base.Preconditions.checkArgument;
+import static io.prestosql.plugin.hive.functions.HiveFunctionErrorCode.unsupportedType;
 import static io.prestosql.spi.StandardErrorCode.INVALID_FUNCTION_ARGUMENT;
 import static io.prestosql.spi.type.StandardTypes.ARRAY;
 import static io.prestosql.spi.type.StandardTypes.BIGINT;

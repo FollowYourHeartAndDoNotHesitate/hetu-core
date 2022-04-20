@@ -70,12 +70,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static io.prestosql.plugin.hive.functions.HiveFunctionErrorCode.unsupportedType;
 import static io.prestosql.plugin.hive.functions.type.DateTimeUtils.createDate;
 import static io.prestosql.plugin.hive.functions.type.DecimalUtils.readHiveDecimal;
 import static io.prestosql.plugin.hive.functions.type.HiveTypes.createHiveChar;
 import static io.prestosql.plugin.hive.functions.type.HiveTypes.createHiveVarChar;
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Float.intBitsToFloat;
 
 public final class BlockInputDecoders

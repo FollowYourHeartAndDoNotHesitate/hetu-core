@@ -47,8 +47,8 @@ import org.apache.hadoop.hive.serde2.typeinfo.VarcharTypeInfo;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.prestosql.plugin.hive.functions.HiveFunctionErrorCode.unsupportedType;
 import static com.google.common.base.Preconditions.checkArgument;
+import static io.prestosql.plugin.hive.functions.HiveFunctionErrorCode.unsupportedType;
 import static io.prestosql.spi.type.StandardTypes.DECIMAL;
 import static java.util.Objects.requireNonNull;
 

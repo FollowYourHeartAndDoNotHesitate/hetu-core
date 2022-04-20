@@ -74,10 +74,12 @@ public class HiveFunctionNamespaceManagerFactory
                 try {
                     if (!getCurrentFunctionNames().contains(key)) {
                         addFunction(key, classLoader.loadClass(config.get(key)));
-                    } else {
+                    }
+                    else {
                         log.warn("Function %s alredy exists.", config.get(key));
                     }
-                } catch (ClassNotFoundException e) {
+                }
+                catch (ClassNotFoundException e) {
                     if (!EXTERNAL_FUNCTIONS_DIR.equals(key)) {
                         log.warn("Invalid parameter %s or class %s not Found.", key, config.get(key));
                     }
@@ -93,10 +95,9 @@ public class HiveFunctionNamespaceManagerFactory
                     .quiet()
                     .initialize();
             return injector.getInstance(FunctionNamespaceManager.class);
-        } catch (PrestoException e) {
+        }
+        catch (PrestoException e) {
             throw e;
         }
     }
-
-
 }

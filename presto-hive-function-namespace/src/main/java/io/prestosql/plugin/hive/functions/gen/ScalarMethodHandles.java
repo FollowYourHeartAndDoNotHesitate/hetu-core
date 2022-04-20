@@ -29,6 +29,7 @@ import java.lang.invoke.MethodHandle;
 import java.util.Collections;
 import java.util.List;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.airlift.bytecode.Access.FINAL;
 import static io.airlift.bytecode.Access.PRIVATE;
 import static io.airlift.bytecode.Access.PUBLIC;
@@ -38,7 +39,6 @@ import static io.airlift.bytecode.Parameter.arg;
 import static io.airlift.bytecode.expression.BytecodeExpressions.newArray;
 import static io.prestosql.plugin.hive.functions.gen.CompilerUtils.defineClass;
 import static io.prestosql.plugin.hive.functions.gen.CompilerUtils.makeClassName;
-import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.prestosql.spi.block.MethodHandleUtil.methodHandle;
 
 public final class ScalarMethodHandles

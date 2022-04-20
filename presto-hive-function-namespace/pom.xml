@@ -93,11 +93,11 @@
         </dependency>
 
         <!-- for testing -->
-        <dependency>
-            <groupId>io.airlift</groupId>
-            <artifactId>testng</artifactId>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.airlift</groupId>-->
+<!--            <artifactId>testng</artifactId>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>io.hetu.core</groupId>
