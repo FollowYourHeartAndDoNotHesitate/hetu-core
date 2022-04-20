@@ -239,6 +239,10 @@ public class FunctionAndTypeManager
         return functionInvokerProvider;
     }
 
+    public Map<String, FunctionNamespaceManager<? extends SqlFunction>> getFunctionNamespaceManagers() {
+        return functionNamespaceManagers;
+    }
+
     public void addFunctionNamespaceFactory(FunctionNamespaceManagerFactory factory)
     {
         if (functionNamespaceManagerFactories.putIfAbsent(factory.getName(), factory) != null) {
