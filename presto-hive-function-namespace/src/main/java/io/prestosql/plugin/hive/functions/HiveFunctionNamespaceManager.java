@@ -22,8 +22,8 @@ import io.prestosql.plugin.hive.functions.scalar.HiveScalarFunction;
 import io.prestosql.spi.Page;
 import io.prestosql.spi.block.Block;
 import io.prestosql.spi.classloader.ThreadContextClassLoader;
-import io.prestosql.spi.connector.CatalogSchemaName;
 import io.prestosql.spi.connector.QualifiedObjectName;
+import io.prestosql.spi.function.BuiltInFunctionHandle;
 import io.prestosql.spi.function.FunctionHandle;
 import io.prestosql.spi.function.FunctionMetadata;
 import io.prestosql.spi.function.FunctionNamespaceManager;
@@ -37,7 +37,6 @@ import org.apache.hadoop.hive.ql.exec.UDF;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 
 import javax.inject.Inject;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -61,7 +60,7 @@ import static java.util.Objects.requireNonNull;
 public class HiveFunctionNamespaceManager
         implements FunctionNamespaceManager<HiveFunction>
 {
-    public static final CatalogSchemaName DEFAULT_NAMESPACE = new CatalogSchemaName("hive", "default");
+    public static final String DEFAULT_SCHEMA = "default";
     public static final String ID = "hive-functions";
 
     private final String catalogName;
@@ -121,20 +120,20 @@ public class HiveFunctionNamespaceManager
 
     public FunctionHandle getFunctionHandle(Optional<? extends FunctionNamespaceTransactionHandle> transactionHandle, Signature signature)
     {
-        return new HiveFunctionHandle(signature);
+        return new BuiltInFunctionHandle(signature);
     }
 
     public FunctionMetadata getFunctionMetadata(FunctionHandle functionHandle)
     {
-        checkArgument(functionHandle instanceof HiveFunctionHandle);
-        HiveFunction function = functions.getUnchecked(FunctionKey.from((HiveFunctionHandle) functionHandle));
+        checkArgument(functionHandle instanceof BuiltInFunctionHandle);
+        HiveFunction function = functions.getUnchecked(FunctionKey.from((BuiltInFunctionHandle) functionHandle));
         return function.getFunctionMetadata();
     }
 
     public ScalarFunctionImplementation getScalarFunctionImplementation(FunctionHandle functionHandle)
     {
-        checkArgument(functionHandle instanceof HiveFunctionHandle);
-        HiveFunction function = functions.getUnchecked(FunctionKey.from((HiveFunctionHandle) functionHandle));
+        checkArgument(functionHandle instanceof BuiltInFunctionHandle);
+        HiveFunction function = functions.getUnchecked(FunctionKey.from((BuiltInFunctionHandle) functionHandle));
         checkState(function instanceof HiveScalarFunction);
         return ((HiveScalarFunction) function).getJavaScalarFunctionImplementation();
     }
@@ -149,7 +148,7 @@ public class HiveFunctionNamespaceManager
     {
         try (ThreadContextClassLoader ignored = new ThreadContextClassLoader(classLoader)) {
             QualifiedObjectName name = key.getName();
-            if (!DEFAULT_NAMESPACE.equals(name.getCatalogSchemaName())) {
+            if (!DEFAULT_SCHEMA.equals(name.getSchemaName())) {
                 throw unsupportedNamespace(name);
             }
             try {
@@ -204,7 +203,7 @@ public class HiveFunctionNamespaceManager
         private final QualifiedObjectName name;
         private final List<TypeSignature> argumentTypes;
 
-        public static FunctionKey from(HiveFunctionHandle handle)
+        public static FunctionKey from(BuiltInFunctionHandle handle)
         {
             Signature signature = handle.getSignature();
             return FunctionKey.of(signature.getName(), signature.getArgumentTypes());

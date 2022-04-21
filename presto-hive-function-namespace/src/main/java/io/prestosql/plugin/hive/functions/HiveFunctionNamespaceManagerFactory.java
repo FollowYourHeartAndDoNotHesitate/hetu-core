@@ -28,7 +28,6 @@ import java.util.Map;
 
 import static io.prestosql.plugin.hive.functions.FunctionRegistry.addFunction;
 import static io.prestosql.plugin.hive.functions.FunctionRegistry.getCurrentFunctionNames;
-import static io.prestosql.plugin.hive.functions.HiveFunctionErrorCode.unsupportedNamespace;
 import static io.prestosql.plugin.hive.functions.HiveFunctionNamespacePlugin.EXTERNAL_FUNCTIONS_DIR;
 import static java.util.Objects.requireNonNull;
 
@@ -64,10 +63,6 @@ public class HiveFunctionNamespaceManagerFactory
     public FunctionNamespaceManager<?> create(String catalogName, Map<String, String> config, FunctionNamespaceManagerContext functionNamespaceManagerContext)
     {
         requireNonNull(config, "config is null");
-
-        if (!catalogName.equals("hive")) {
-            throw unsupportedNamespace(catalogName);
-        }
 
         try (ThreadContextClassLoader ignored = new ThreadContextClassLoader(classLoader)) {
             for (String key : config.keySet()) {

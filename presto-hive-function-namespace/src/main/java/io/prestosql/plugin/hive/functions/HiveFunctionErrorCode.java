@@ -84,13 +84,7 @@ public enum HiveFunctionErrorCode
     public static PrestoException unsupportedNamespace(QualifiedObjectName name)
     {
         return new PrestoException(HIVE_FUNCTION_UNSUPPORTED_NAMESPACE, "Hive udf unsupported namespace " + name.getCatalogSchemaName()
-                + ". It should start with hive.default.");
-    }
-
-    public static PrestoException unsupportedNamespace(String catalogName)
-    {
-        return new PrestoException(HIVE_FUNCTION_UNSUPPORTED_NAMESPACE, "Hive udf unsupported catalog name " + catalogName
-                + ". The configuration file should be changed to hive.properties.");
+                + ". It's schema should be default.");
     }
 
     public static PrestoException functionNotFound(String name)

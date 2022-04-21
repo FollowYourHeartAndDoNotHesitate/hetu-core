@@ -14,6 +14,7 @@
 
 package io.prestosql.plugin.hive.functions;
 
+import io.prestosql.spi.function.BuiltInFunctionHandle;
 import io.prestosql.spi.function.FunctionHandle;
 import io.prestosql.spi.function.FunctionHandleResolver;
 
@@ -23,6 +24,6 @@ public class HiveFunctionHandleResolver
     @Override
     public Class<? extends FunctionHandle> getFunctionHandleClass()
     {
-        return HiveFunctionHandle.class;
+        return BuiltInFunctionHandle.class;
     }
 }
